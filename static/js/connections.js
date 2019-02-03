@@ -2,7 +2,7 @@ var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
 var formatMY = d3.timeFormat("%b %Y"); //format month year
 
 //Récupération des données
-d3.csv("https://github.com/guillaume-lesaine/vis-my_way/blob/master/data/Data_L/Connections.csv",function(raw){
+d3.csv("data/Data_L/Connections.csv",function(raw){
 	raw.forEach(function(d,i) {
 		d.first_name = d['First Name'];
 		d.last_name = d['Last Name'];
