@@ -1,0 +1,88 @@
+html,
+body {
+}
+
+#frame {
+  width: 94%;
+  margin-left: 3%;
+  margin-right: 3%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+#header {
+  width: 98%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  display: inline-block;
+  text-align: center;
+}
+
+#name {
+  width: 100%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  display: inline-block;
+  font-size: 30px;
+}
+
+#headline {
+  width: 100%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  display: inline-block;
+  font-size: 20px;
+}
+
+#description {
+  width: 70%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  display: inline-block;
+  text-align: justify;
+  text-justify: inter-word;
+  font-size: 12px;
+}
+
+#contact {
+  width: 100%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  display: inline-block;
+  font-size: 12px;
+}
+
+#core {
+  width: 98%;
+  height: 500px;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+#contacts{
+  width: 20%;
+  height: 100%;
+  float: left;
+  background-color: blue;
+}
+
+#timeline{
+  width: 80%;
+  height: 500px;
+  float: left;
+  background-color: red;
+}
+
+#footer {
+  width: 98%;
+  height: 200px;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  background-color: green;
+}
