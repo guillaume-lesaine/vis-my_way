@@ -19,7 +19,7 @@ d3.csv("data/Data_L/Connections.csv",function(raw){
 		.rollup(function(v) {return v.length;})
 		.entries(data);
 		
-	console.log(nested_data)
+	//console.log(nested_data)
 	
 	plot(nested_data)
 })
@@ -97,7 +97,7 @@ svg.append('g').selectAll("rect")
 				var mouse = d3.mouse(svg.node()).map(function(d) {
                         return parseInt(d);
                     });
-				console.log(mouse);
+				//console.log(mouse);
 				tooltip
 					.attr('style',
 						'position: relative;' +
