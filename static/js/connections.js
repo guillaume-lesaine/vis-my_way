@@ -1,6 +1,8 @@
 var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
 var formatMY = d3.timeFormat("%b %Y"); //format month year
 
+console.log(j)
+
 //Récupération des données
 d3.csv("data/Data_L/Connections.csv",function(raw){
 	raw.forEach(function(d,i) {
@@ -57,6 +59,7 @@ var xScale = d3.scaleLinear()
 //selectionner uniquement les mois de janvier
 var yAxisLabel = nested_data.map(function(d) {return d.key}).filter(
 	function(d) {
+		console.log(d.split(' '))
 	var words = d.split(' ');
 	if (words[0]==='Jan') {
 		return d;
