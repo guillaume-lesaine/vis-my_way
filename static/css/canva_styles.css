@@ -74,7 +74,12 @@ body {
   width: 70%;
   height: 500px;
   float: left;
-  background-color: red;
+}
+
+#education{
+  width: 25%;
+  height: 500px;
+  float: left;
 }
 
 #footer {
@@ -84,5 +89,4 @@ body {
   margin-right: 1%;
   margin-top: 1%;
   margin-bottom: 1%;
-  background-color: green;
 }
