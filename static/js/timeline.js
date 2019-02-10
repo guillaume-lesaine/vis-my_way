@@ -1,28 +1,60 @@
-var parseDate_education = d3.timeParse("%Y");
+var parseDate_Y = d3.timeParse("%Y");
+var parseDate_MY = d3.timeParse("%b %Y");
 
-//Récupération des données Education
-d3.csv("data/Data_L/Education.csv",function(raw){
-	raw.forEach(function(d,i) {
-		d.school_name = d['School Name'];
-		d.start_date = parseDate_education(d['Start Date']);
-		d.end_date = parseDate_education(d['End Date']);
-		d.note = d['Notes'];
-	})
-	var data_education = raw;
+var data_education;
+var data_positions;
+var data_projects;
 	
-	plot_education(data_education)
-})
+//Récupération des données
+function load_data() {
+	//data education
+	d3.csv("data/Data_L/Education.csv",function(raw){
+		raw.forEach(function(d,i) {
+			d.school_name = d['School Name'];
+			d.start_date = parseDate_Y(d['Start Date']);
+			d.end_date = parseDate_Y(d['End Date']);
+			d.note = d['Notes'];
+		})
+		data_education = raw;
+	
+	})
+	console.log(data_education)
+	//data positions
+	d3.csv("data/Data_L/Positions.csv",function(raw){
+		raw.forEach(function(d,i) {
+			d.company = d['Company Name'];
+			d.title = d['Title'];
+			d.description = d['Description'];
+			d.loc_position = d['Location'];
+			d.start_date = parseDate_MY(d['Started On']);
+			d.end_date =  parseDate_MY(d['Finished On']);
+		})
+		data_positions = raw;
+		//console.log(data_positions)
+	})
+	//data projects
+	d3.csv("data/Data_L/Projects.csv",function(raw){
+		raw.forEach(function(d,i) {
+			d.title = d['Title'];
+			d.description = d['Description'];
+			d.start_date = parseDate_MY(d['Start Date']);
+			d.end_date = parseDate_MY(d['End Date']);
+		})
+		data_projects = raw;
+		//console.log(data_projects)
+	})
+	console.log(data_education)
+	//plot_timeline(data_education, data_positions, data_projects)
+}
+function plot_timeline(data_education, data_positions, data_projects) {
 
-function plot_education(data) {
-// Creation du svg
-
-// Margin setup
+// Creation du svg graph
 var margin = {top: 5, right: 5, bottom: 5, left: 5};
 
-var width = document.getElementById("education").offsetWidth - margin.left - margin.right;
-var height = document.getElementById("education").offsetHeight - margin.top - margin.bottom;
+var width = document.getElementById("timeline_graph").offsetWidth - margin.left - margin.right;
+var height = document.getElementById("timeline_graph").offsetHeight - margin.top - margin.bottom;
 	
-var svg = d3.select("#education").append("svg")
+var svg = d3.select("#timeline_graph").append("svg")
 	.attr("width", width + margin.left + margin.right)
 	.attr("height", height + margin.top + margin.bottom)
 	.append('g')
@@ -31,30 +63,33 @@ var svg = d3.select("#education").append("svg")
 //Echelle de couleur
 var color = d3.scaleOrdinal(d3.schemeCategory20)
 
-//Creation des echelles
-
 //echelle verticale y
+var min_list = [];
+var max_list = [];
+console.log(data_education.map(function(d) {return d.start_date}))
+min_list.push(d3.min(data_education, function(d) {return d.start_date}));
+min_list.push(d3.min(data_positions, function(d) {return d.start_date}));
+min_list.push(d3.min(data_projects, function(d) {return d.start_date}));
+
+max_list.push(d3.max(data_education, function(d) {return d.end_date}));
+max_list.push(d3.max(data_positions, function(d) {return d.end_date}));
+max_list.push(d3.max(data_projects, function(d) {return d.end_date}));
+
 var yScale = d3.scaleTime()
-	.domain([d3.min(data, function(d) {return d.start_date}),d3.max(data, function(d) {return d.end_date})])
+	.domain([d3.min(min_list, function(d) {return d}),d3.max(max_list, function(d) {return d})])
 	.range([height,0]);
 
 //echelle x
 var xScale = d3.scaleBand()
-	.domain(data.map(function(d,i) {return i}))
+	.domain([0,1,2])
 	.rangeRound([0,width])
-	.paddingInner(0.1);
-
-
-//tooltip
-var tooltip = d3.select('body').append('div')
-    .attr('class', 'hidden tooltip');
-
-
-svg.append('g').selectAll("rect")
-	.data(data)
+	.paddingInner(0.5);
+/*
+education = svg.append('g').selectAll("rect")
+	.data(data_education)
 	.enter()
 		.append("rect")
-			.attr("x", function(d,i){return xScale(i);})
+			.attr("x", xScale(0))
 			.attr("y",function(d){return yScale(d.end_date);})
 			.attr("height",function(d){
 				console.log(d.start_date);
@@ -63,36 +98,7 @@ svg.append('g').selectAll("rect")
 			.attr("width", function(d,i){return xScale.bandwidth();})
 			.attr("fill", color(1))
 			.attr('stroke', 'none')
-			.on('mousemove', function(d) {
-				var mouse = d3.mouse(svg.node()).map(function(d) {
-                        return parseInt(d);
-                    });
-				tooltip
-					.attr('style', 
-						'left:' + (mouse[0] + 120 ) +'px;'+
-						'top:' + (mouse[1] + 5 ) + 'px;'+
-						'position: absolute;'+
-						'color: #222;'+
-						'background-color: #fff;'+
-						'padding: .5em;'+
-						'text-shadow: #f5f5f5 0 1px 0;'+
-						'border-radius: 2px;'+
-						'opacity: 0.9'
-						)
-					.html(d.key + ': ' + d.value);
-				d3.selectAll('rect')
-				.attr("opacity", function(e) {
-					if (e===d) {
-						return 1
-					} else {
-						return 0.4
-					}
-				});		
-			})
-			.on('mouseout', function() {
-				tooltip.attr('style','display: none');
-				d3.selectAll('rect')
-				.attr("opacity", 1);
-            })
-
+*/
 }
+
+load_data()
