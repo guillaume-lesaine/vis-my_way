@@ -1,30 +1,24 @@
-var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
-var formatMY = d3.timeFormat("%b %Y"); //format month year
-
-//Récupération des données
-d3.csv("data/Data_L/Connections.csv", function(raw) {
-  raw.forEach(function(d, i) {
-    d.first_name = d['First Name'];
-    d.last_name = d['Last Name'];
-    d.date = parseDate(d['Connected On']);
-    d.month_year = formatMY(d.date);
+var plot_connections = function(connections) {
+  //Data preparations
+  var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
+  var formatMY = d3.timeFormat("%b %Y"); //format month year
+  connections.forEach(function(d, i) {
+    d['Connected On'] = parseDate(d['Connected On']);
+    d.month_year = formatMY(d['Connected On']);
   })
-  var data = raw;
 
   //Transformation des données
-  var nested_data = d3.nest()
+  var data_connections = d3.nest()
     .key(function(d) {
       return d.month_year
     })
     .rollup(function(v) {
       return v.length;
     })
-    .entries(data);
+    .entries(connections);
 
-  plot(nested_data)
-})
+  d3.select("#svg_connections").remove();
 
-function plot(nested_data) {
   // Creation du svg
 
   // Margin setup svg
@@ -40,6 +34,7 @@ function plot(nested_data) {
   var svg = d3.select("#contacts").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("id", "svg_connections")
     .append('g')
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -50,7 +45,7 @@ function plot(nested_data) {
 
   //echelle verticale y
   var yScale = d3.scaleBand()
-    .domain(nested_data.map(function(d) {
+    .domain(data_connections.map(function(d) {
       return d.key
     }))
     .paddingInner(0.05)
@@ -58,13 +53,13 @@ function plot(nested_data) {
 
   //echelle count x
   var xScale = d3.scaleLinear()
-    .domain([0, d3.max(nested_data, function(d) {
+    .domain([0, d3.max(data_connections, function(d) {
       return d.value;
     })])
     .rangeRound([width, 0]);
 
   //selectionner uniquement les mois de janvier
-  var yAxisLabel = nested_data.map(function(d) {
+  var yAxisLabel = data_connections.map(function(d) {
     return d.key
   }).filter(
     function(d) {
@@ -95,7 +90,7 @@ function plot(nested_data) {
     .attr('class', 'hidden tooltip');
 
   svg.append('g').selectAll("rect")
-    .data(nested_data)
+    .data(data_connections)
     .enter()
     .append("rect")
     .attr("x", function(d, i) {
