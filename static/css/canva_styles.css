@@ -74,7 +74,18 @@ body {
   width: 70%;
   height: 500px;
   float: left;
-  background-color: red;
+}
+
+#timeline_graph{
+  width: 15%;
+  height: 500px;
+  float: left;
+}
+
+#timeline_text{
+  width: 85%;
+  height: 500px;
+  float: left;
 }
 
 #footer {
@@ -84,5 +95,4 @@ body {
   margin-right: 1%;
   margin-top: 1%;
   margin-bottom: 1%;
-  background-color: green;
 }
