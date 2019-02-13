@@ -31,7 +31,8 @@
   </div>
   <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
     <ul class="navbar-nav ml-auto">
-      <input type="file" id="real_file_button" hidden="hidden" multiple />
+      <!-- <input id="real_file_button" type="file" name="file" onchange="read(this.files)" webkitdirectory=true> -->
+      <input type="file" id="real_file_button" hidden="hidden" onchange="read_onload(this.files)" webkitdirectory=true />
       <button type="button" id="load_data_button" class="btn btn-warning navbar-btn">Load Data</button>
     </ul>
   </div>
@@ -48,19 +49,32 @@
     <div id="core">
       <div id="contacts"></div>
       <div id="timeline">
-		<div id="timeline_graph"></div>
-		<div id="timeline_text"></div>
-	  </div>
+        <div id="timeline_graph"></div>
+        <div id="timeline_text"></div>
+      </div>
     </div>
     <div id="footer">
     </div>
   </div>
+  <script>
+    function read(files) {
+      console.log(files)
+      for (var i = 0; i < files.length; i++) {
+        (function(file) {
+          var reader = new FileReader(); // Use of the FileReader tool
+          reader.onloadend = function(e) {
+            console.log($.csv.toObjects(e.target.result))
+          }
+          reader.readAsText(file, "UTF-8");
+        })(files[i])
+      }
+    };
+  </script>
   <script type="text/javascript" src="static/js/connections.js"></script>
   <script type="text/javascript" src="static/js/header.js"></script>
   <script type="text/javascript" src="static/js/skills.js"></script>
   <script type="text/javascript" src="static/js/timeline.js"></script>
   <script type="text/javascript" src="static/js/data_loader.js"></script>
-  <script type="text/javascript" src="static/js/import_header_information.js"></script>
 </body>
 
 </html>

@@ -2,7 +2,7 @@ var plot_connections = function(connections) {
   //Data preparations
   var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
   var formatMY = d3.timeFormat("%b %Y"); //format month year
-  connections.forEach(function(d, i) {
+  connections[0].forEach(function(d, i) {
     d['Connected On'] = parseDate(d['Connected On']);
     d.month_year = formatMY(d['Connected On']);
   })
@@ -15,7 +15,7 @@ var plot_connections = function(connections) {
     .rollup(function(v) {
       return v.length;
     })
-    .entries(connections);
+    .entries(connections[0]);
 
   d3.select("#svg_connections").remove();
 
@@ -39,7 +39,7 @@ var plot_connections = function(connections) {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //Echelle de couleur
-  var color = d3.scaleOrdinal(d3.schemeCategory20)
+  var color = d3.scaleOrdinal(d3.schemeCategory10)
 
   //Creation des echelles
 
