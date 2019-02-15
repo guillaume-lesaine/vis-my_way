@@ -43,7 +43,7 @@ files_additional_treatment = ["Account Status History.csv", "Endorsement Receive
 
 // Event listener allowing to detect loading of page
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("TOPTOPTOP");
+  //console.log("TOPTOPTOP");
   read_initial()
 });
 

@@ -1,5 +1,5 @@
 function plot_skills(skills) {
-  data_skills = skills[0]
+  data_skills = skills[0];
   d3.select("#footer").selectAll("text")
     .data(data_skills)
     .enter()
