@@ -76,6 +76,23 @@ body {
   float: left;
 }
 
+.text_box{
+  width: 100%;
+  float: top;
+}
+
+.title{
+  width: 100%;
+  float: top;
+  font-size: 20px;
+}
+
+.subtitle{
+  width: 100%;
+  float: top;
+  font-size: 10px;
+}
+
 #timeline_graph{
   width: 15%;
   height: 500px;
