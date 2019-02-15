@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width" />
   <title>My Way</title>
   <link rel="stylesheet" href="static/css/canva_styles.css">
   <link rel="stylesheet" href="static/css/bootstrap.css">
@@ -31,7 +32,6 @@
   </div>
   <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
     <ul class="navbar-nav ml-auto">
-      <!-- <input id="real_file_button" type="file" name="file" onchange="read(this.files)" webkitdirectory=true> -->
       <input type="file" id="real_file_button" hidden="hidden" onchange="read_onload(this.files)" webkitdirectory=true />
       <button type="button" id="load_data_button" class="btn btn-warning navbar-btn">Load Data</button>
     </ul>
@@ -39,7 +39,7 @@
 </nav>
 
 <body>
-  <div id="frame">
+  <div id="export">
     <div id="header">
       <h1 id="name"></h1>
       <h3 id="headline"></h3>
@@ -53,23 +53,18 @@
         <div id="timeline_text"></div>
       </div>
     </div>
-    <div id="footer">
+    <div id="footer"></div>
+  </div>
+  <div id="interaction">
+    <h1 id="customization">Customization</h1>
+    <h3 class="title">Skills</h3>
+    <div id="skills"></div>
+    <h3 class="title">Highlights</h3>
+    <h3 class="title">Export your resume!</h3>
+    <div id="export_zone">
+      <button type="button" id="export_resume_button" class="btn btn-danger">PDF</button>
     </div>
   </div>
-  <script>
-    function read(files) {
-      console.log(files)
-      for (var i = 0; i < files.length; i++) {
-        (function(file) {
-          var reader = new FileReader(); // Use of the FileReader tool
-          reader.onloadend = function(e) {
-            console.log($.csv.toObjects(e.target.result))
-          }
-          reader.readAsText(file, "UTF-8");
-        })(files[i])
-      }
-    };
-  </script>
   <script type="text/javascript" src="static/js/connections.js"></script>
   <script type="text/javascript" src="static/js/header.js"></script>
   <script type="text/javascript" src="static/js/skills.js"></script>

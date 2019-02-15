@@ -32,6 +32,8 @@ var plot_connections = function(connections) {
   var height = document.getElementById("contacts").offsetHeight - margin.top - margin.bottom;
 
   var svg = d3.select("#contacts").append("svg")
+    // .attr("viewBox", "0 0 " + width + " " + height)
+    // .attr("perserveAspectRatio", "xMinYMid")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("id", "svg_connections")

@@ -2,22 +2,60 @@ html,
 body {
 }
 
-#frame {
-  width: 94%;
-  margin-left: 3%;
-  margin-right: 3%;
-  margin-top: 1%;
-  margin-bottom: 1%;
+#export {
+  width: 74%;
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  float: left;
+}
+
+#interaction {
+  width: 25%;
+  height: 1000px;
+  float: left;
+  background-color: #F5F5DC;
 }
 
 #header {
   width: 98%;
-  margin-left: 1%;
-  margin-right: 1%;
   margin-top: 1%;
   margin-bottom: 1%;
   display: inline-block;
   text-align: center;
+}
+
+#customization {
+  width: 100%;
+  margin-top: 6%;
+  margin-bottom: 0.5%;
+  display: inline-block;
+  font-size: 30px;
+  text-align: center;
+}
+
+.title {
+  width: 96%;
+  margin-top: 6%;
+  margin-bottom: 3%;
+  margin-left: 4%;
+  display: inline-block;
+  font-size: 20px;
+}
+
+#skills {
+  width: 92%;
+  margin-left: 4%;
+  margin-right: 4%;
+  display: inline-block;
+}
+
+#export_zone {
+  width: 92%;
+  margin-left: 4%;
+  margin-right: 4%;
+  display: inline-block;
 }
 
 #name {
