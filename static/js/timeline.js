@@ -56,6 +56,7 @@ function plot_timeline(data_timeline) {
   var svg = d3.select("#timeline_graph").append("svg")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("perserveAspectRatio", "xMinYMid")
+    .attr("id", "svg_timeline_graph")
     // .attr("width", width + margin.left + margin.right)
     // .attr("height", height + margin.top + margin.bottom)
     .append('g')
