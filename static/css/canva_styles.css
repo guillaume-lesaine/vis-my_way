@@ -2,24 +2,46 @@ html,
 body {
 }
 
+.navbarG {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+}
+
+li a:hover {
+  color: #E5E4E2;
+  text-decoration: none;
+}
+
 #export {
   width: 74%;
   margin-left: 0.5%;
   margin-right: 0.5%;
-  margin-top: 0.5%;
-  margin-bottom: 0.5%;
   float: left;
 }
 
 #interaction {
   width: 25%;
-  height: 1000px;
   float: left;
-  background-color: #F5F5DC;
+  background-color: #E5E4E2;
 }
 
 #header {
   width: 98%;
+  height: 10%;
   margin-top: 1%;
   margin-bottom: 1%;
   display: inline-block;
@@ -28,26 +50,27 @@ body {
 
 #customization {
   width: 100%;
-  margin-top: 6%;
+  margin-top: 4%;
   margin-bottom: 0.5%;
   display: inline-block;
-  font-size: 30px;
+  font-size: 2vw;
   text-align: center;
 }
 
-.title {
+#title {
   width: 96%;
   margin-top: 6%;
   margin-bottom: 3%;
   margin-left: 4%;
   display: inline-block;
-  font-size: 20px;
+  font-size: 1.2vw;
 }
 
 #skills {
   width: 92%;
   margin-left: 4%;
   margin-right: 4%;
+  font-size: 1vw;
   display: inline-block;
 }
 
@@ -63,7 +86,7 @@ body {
   margin-top: 0.5%;
   margin-bottom: 0.5%;
   display: inline-block;
-  font-size: 30px;
+  font-size: 2vw;
 }
 
 #headline {
@@ -71,17 +94,17 @@ body {
   margin-top: 0.5%;
   margin-bottom: 0.5%;
   display: inline-block;
-  font-size: 20px;
+  font-size: 1.2vw;
 }
 
 #description {
-  width: 70%;
+  width: 80%;
   margin-top: 0.5%;
   margin-bottom: 0.5%;
   display: inline-block;
   text-align: justify;
   text-justify: inter-word;
-  font-size: 12px;
+  font-size: 1vw;
 }
 
 #contact {
@@ -89,12 +112,12 @@ body {
   margin-top: 0.5%;
   margin-bottom: 0.5%;
   display: inline-block;
-  font-size: 12px;
+  font-size: 0.8vw;
 }
 
 #core {
   width: 98%;
-  height: 500px;
+  height: 86%;
   margin-left: 1%;
   margin-right: 1%;
   margin-top: 1%;
@@ -102,15 +125,15 @@ body {
 }
 
 #contacts{
-  width: 30%;
+  width: 15%;
   height: 100%;
   float: left;
   background-color: none;
 }
 
 #timeline{
-  width: 70%;
-  height: 500px;
+  width: 85%;
+  height: 100%;
   float: left;
 }
 
@@ -122,32 +145,23 @@ body {
 .title{
   width: 100%;
   float: top;
-  font-size: 20px;
+  font-size: 1.2vw;
 }
 
 .subtitle{
   width: 100%;
   float: top;
-  font-size: 10px;
+  font-size: 0.8vw;
 }
 
 #timeline_graph{
   width: 15%;
-  height: 500px;
+  height: 100%;
   float: left;
 }
 
 #timeline_text{
   width: 85%;
-  height: 500px;
+  height: 100%;
   float: left;
-}
-
-#footer {
-  width: 98%;
-  height: 200px;
-  margin-left: 1%;
-  margin-right: 1%;
-  margin-top: 1%;
-  margin-bottom: 1%;
 }
