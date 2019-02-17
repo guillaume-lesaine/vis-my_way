@@ -68,13 +68,12 @@ function plot_timeline(data_timeline) {
 		d.Description = d.Description.replace(/ -/g,"<br> -")
 		}
 	})
-	console.log(data_timeline)
 
   //Data Parsing
   data_timeline.forEach(function(d) {
     if (d.type === "education") {
-      d.start_date = parseDate_Y(d['Start Date']);
-      d.end_date = parseDate_Y(d['End Date']);
+      d.start_date = parseDate_MY(d['Start Date']);
+      d.end_date = parseDate_MY(d['End Date']);
       if (d.start_date.getTime() === d.end_date.getTime()) {
         d.end_date = d.end_date + parseDate_Y("1");
         //console.log(d.end_date);
@@ -127,7 +126,7 @@ function plot_timeline(data_timeline) {
 	var xScale = d3.scaleBand()
 	.domain(["education", "positions", "projects"])
 	.rangeRound([0, width])
-	.paddingInner(0.5);
+	.paddingInner(0.3);
 	
 	//rect
 	svg.append('g').selectAll("rect")
@@ -137,7 +136,6 @@ function plot_timeline(data_timeline) {
 			.attr("x", function(d) {return xScale(d.type)})
 			.attr("y",function(d){return yScale(d.end_date);})
 			.attr("height",function(d){
-				//console.log(yScale(d.end_date));
 				return yScale(d.start_date)-yScale(d.end_date);
 			})
 			.attr("width", function(d,i){return xScale.bandwidth();})
