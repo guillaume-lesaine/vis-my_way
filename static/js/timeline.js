@@ -56,7 +56,6 @@ function plot_timeline(data_timeline) {
   }
   data_timeline = data_timeline.sort(sortByDateAscending)
 
-
   //mise en forme du texte
   data_timeline.forEach(function(d) {
     if (d.type === "education") { //education
