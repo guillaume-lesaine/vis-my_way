@@ -33,21 +33,6 @@ $("#export_resume_button").click(function() {
   chart_timeline_graph_div.setAttribute("hidden", "hidden")
   var chart_timeline_graph_string = canvg(document.getElementById('canvas_timeline_graph'), chart_timeline_graph_svg.outerHTML)
 
-  // Activate a canvas for timeline graph
-  var chart_timeline_graph_div = document.getElementById("timeline_graph")
-  var chart_timeline_graph_svg = document.getElementById("svg_timeline_graph")
-  var chart_timeline_graph_canvas = document.getElementById("canvas_timeline_graph")
-  var chart_timeline_graph_style = {
-    "width": window.getComputedStyle(chart_timeline_graph_div).getPropertyValue('width'),
-    "height": window.getComputedStyle(chart_timeline_graph_div).getPropertyValue('height')
-  }
-  chart_timeline_graph_canvas.removeAttribute("hidden");
-  chart_timeline_graph_canvas.setAttribute("width", chart_timeline_graph_style.width)
-  chart_timeline_graph_canvas.setAttribute("height", chart_timeline_graph_style.height)
-  chart_timeline_graph_div.setAttribute("hidden", "hidden")
-  var chart_timeline_graph_string = canvg(document.getElementById('canvas_timeline_graph'), chart_timeline_graph_svg.outerHTML)
-
-
   // Turn the #export div to a canvas
   html2canvas(document.getElementById("export")).then(function(canvas) {
     canvas.setAttribute("hidden", "hidden")
