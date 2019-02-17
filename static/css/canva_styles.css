@@ -215,13 +215,15 @@ li a:hover {
 }
 
 #timeline_graph{
-  width: 15%;
+  width: 12%;
   height: 100%;
   float: left;
 }
 
 #timeline_text{
-  width: 85%;
+  width: 86%;
   height: 100%;
   float: left;
+  margin-left: 1%;
+  margin-right: 1%
 }

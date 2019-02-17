@@ -68,14 +68,12 @@ function plot_timeline(data_timeline) {
       d.Description = d.Description.replace(/ -/g, "<br> -")
     }
   })
-  //console.log(data_timeline)
 
   //Data Parsing
   data_timeline.forEach(function(d) {
     if (d.type === "education") {
-      console.log(parseDate_Y(d['Start Date']))
-      d.start_date = parseDate_Y(d['Start Date']);
-      d.end_date = parseDate_Y(d['End Date']);
+      d.start_date = parseDate_MY(d['Start Date']);
+      d.end_date = parseDate_MY(d['End Date']);
       if (d.start_date.getTime() === d.end_date.getTime()) {
         d.end_date = d.end_date + parseDate_Y("1");
         //console.log(d.end_date);
@@ -93,24 +91,23 @@ function plot_timeline(data_timeline) {
   })
 
   // Creation du svg graph
-  // var margin = {
-  //   top: 5,
-  //   right: 5,
-  //   bottom: 5,
-  //   left: 5
-  // };
+
+  d3.select("#svg_timeline_graph").remove();
 
   var width = document.getElementById("timeline_graph").offsetWidth // - margin.left - margin.right;
   var height = document.getElementById("timeline_graph").offsetHeight // - margin.top - margin.bottom;
+
+  // width = w1 + w2
+  // w1 : width timeline graph
+  // w2 : width timeline text
+  var w1 = width * 0.6
+  var w2 = width * 0.4
 
   var svg = d3.select("#timeline_graph").append("svg")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("perserveAspectRatio", "xMinYMid")
     .attr("id", "svg_timeline_graph")
-    // .attr("width", width + margin.left + margin.right)
-    // .attr("height", height + margin.top + margin.bottom)
     .append('g')
-  //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //Echelle de couleur
   var color = d3.scaleOrdinal(d3.schemePaired)
@@ -128,7 +125,7 @@ function plot_timeline(data_timeline) {
   var xScale = d3.scaleBand()
     .domain(["education", "positions", "projects"])
     .rangeRound([0, width])
-    .paddingInner(0.5);
+    .paddingInner(0.3);
 
   //rect
   svg.append('g').selectAll("rect")
@@ -142,7 +139,6 @@ function plot_timeline(data_timeline) {
       return yScale(d.end_date);
     })
     .attr("height", function(d) {
-      //console.log(yScale(d.end_date));
       return yScale(d.start_date) - yScale(d.end_date);
     })
     .attr("width", function(d, i) {
