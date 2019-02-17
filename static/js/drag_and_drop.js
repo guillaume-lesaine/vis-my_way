@@ -1,6 +1,6 @@
 // Credit : https://openclassrooms.com/fr/courses/1916641-dynamisez-vos-sites-web-avec-javascript/1922434-le-drag-drop
 
-function drag_and_drop() {
+function drag_and_drop(x) { // x is an empty array from the method_store array in data_loader.js
   var dndHandler = {
     draggedElement: null, // Propriété pointant vers l'élément en cours de déplacement
 
@@ -33,7 +33,6 @@ function drag_and_drop() {
         target.className = 'dropper'; // Application du design par défaut
         clonedElement = target.appendChild(clonedElement); // Ajout de l'élément cloné à la zone de drop actuelle
         dndHandler.applyDragEvents(clonedElement); // Nouvelle application des événements qui ont été perdus lors du cloneNode()
-        console.log(draggedElement.parentNode)
         draggedElement.parentNode.removeChild(draggedElement); // Suppression de l'élément d'origine
       });
     }

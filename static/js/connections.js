@@ -22,8 +22,8 @@ var plot_connections = function(connections) {
   d3.select("#svg_connections").remove();
 
   // Creation du svg
-  var width = document.getElementById("contacts").offsetWidth // - margin.left - margin.right;
-  var height = document.getElementById("contacts").offsetHeight // - margin.top - margin.bottom;
+  var width = document.getElementById("connections").offsetWidth // - margin.left - margin.right;
+  var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
 
   // width = w1 + w2
   // w1 : width chart
@@ -31,7 +31,7 @@ var plot_connections = function(connections) {
   var w1 = width * 0.7
   var w2 = width * 0.3
 
-  var svg = d3.select("#contacts").append("svg")
+  var svg = d3.select("#connections").append("svg")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("perserveAspectRatio", "xMinYMid")
     .attr("id", "svg_connections")
@@ -67,8 +67,6 @@ var plot_connections = function(connections) {
         return d;
       }
     })
-
-  console.log(yAxisLabel)
 
   var yAxis = d3.axisRight()
     .scale(yScale)

@@ -36,6 +36,9 @@ method_store = [{
 }, {
   "method": plot_timeline,
   "files": ["Education.csv", "Positions.csv", "Projects.csv"]
+}, {
+  "method": drag_and_drop, //The drag and drop activation is conducted once everything else has been generated
+  "files": []
 }]
 
 // We store in a list the files that need additional processing using custom regex

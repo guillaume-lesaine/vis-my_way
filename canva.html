@@ -18,10 +18,10 @@
   <div class="myway_navbar">
     <li><a target="_blank" href="">My Way</a></li>
     <li><a class="fa fa-github" target="_blank" href="https://github.com/guillaume-lesaine/vis-my_way" style="font-size:25px"></a></li>
-    <li style="float:right; padding: 6px 8px;">
+    <li style="float:right; padding: 6px 12px;">
       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">?</button>
     </li>
-    <li style="float:right; padding: 6px 8px;">
+    <li style="float:right; padding: 6px 12px;">
       <input type="file" id="real_file_button" hidden="hidden" onchange="read_onload(this.files)" webkitdirectory=true />
       <button type="button" id="load_data_button" class="btn btn-warning navbar-btn">Load Data</button>
     </li>
@@ -35,8 +35,8 @@
       <h5 id="contact"></h5>
     </div>
     <div id="core">
-      <div id="contacts"></div>
-      <canvas id="canvas_contacts" hidden="hidden" style="float:left"></canvas>
+      <div id="connections"></div>
+      <canvas id="canvas_connections" hidden="hidden" style="float:left"></canvas>
       <div id="timeline">
         <div id="timeline_graph"></div>
         <canvas id="canvas_timeline_graph" hidden="hidden" style="float:left"></canvas>
@@ -86,19 +86,15 @@
     <div id="export_zone" style="float:left;display: flex;">
       <button type="button" id="export_resume_button" class="btn btn-danger" style="padding: 4% 4% ;font-size:1.1vw;">PDF</button>
     </div>
-    <div id="test_dropper" class="dropper" style="height:10%">
-    </div>
   </div>
   <script type="text/javascript" src="static/js/drag_and_drop.js"></script>
   <script type="text/javascript" src="static/js/connections.js"></script>
   <script type="text/javascript" src="static/js/header.js"></script>
+  <script type="text/javascript" src="static/js/timeline.js"></script>
   <script type="text/javascript" src="static/js/skills.js"></script>
   <script type="text/javascript" src="static/js/timeline.js"></script>
   <script type="text/javascript" src="static/js/data_loader.js"></script>
   <script type="text/javascript" src="bundle/bundle_export.js"></script>
-  <script>
-
-  </script>
 </body>
 
 </html>

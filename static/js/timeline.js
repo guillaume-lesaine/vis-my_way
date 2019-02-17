@@ -148,19 +148,32 @@ function plot_timeline(data_timeline) {
       return color(i);
     })
     .attr('stroke', "black")
+
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
     .data(data_timeline)
     .enter()
     .append("div") //text_box
+    .attr("id", (d, i) => "text_box_" + i)
     .attr("class", "text_box")
 
   var text_box_text = text_box.append("div") // text box left
     .attr("class", "text_box_text")
+    .attr("id", function(d, i) {
+      return "text_box_text_" + i
+    })
+
   var text_box_addskills = text_box.append("div") // text box right
     .attr("class", "text_box_addskills")
+    .attr("id", function(d, i) {
+      return "text_box_addskills_" + i
+    })
+
   text_box_text.append("div") //title
     .attr("class", "title")
+    .attr("id", function(d, i) {
+      return "title_" + i
+    })
     .attr("style", function(d, i) {
       return "text-decoration-color:" + color(i);
     })
@@ -175,8 +188,12 @@ function plot_timeline(data_timeline) {
         return d['Title']
       }
     });
+
   text_box_text.append("div") //subtitle
     .attr("class", "subtitle")
+    .attr("id", function(d, i) {
+      return "subtitle_" + i
+    })
     .html(function(d) {
       if (d.type === "education") {
         return d['Notes'];
@@ -188,11 +205,14 @@ function plot_timeline(data_timeline) {
         return d['Description']
       }
     });
+
   var skills_box = text_box_text.append("div") //skills_box
-    .attr("class", "skills_box")
+    .attr("class", "dropper")
     .attr("id", function(d, i) {
-      return "skills_box" + i
-    });
+      return "skills_box_" + i
+    })
+    .style("min-height", "3vw")
+
   text_box_addskills.append("button")
     .attr("class", "btn btn-danger")
     .html("+")

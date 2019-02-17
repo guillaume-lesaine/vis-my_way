@@ -1,15 +1,15 @@
 function plot_skills(skills) {
   data_skills = skills[0];
 
-  // Remove and renew the test dropper
-  document.getElementById("test_dropper").remove()
-  var iDiv = document.createElement("div");
-  iDiv.id = "test_dropper";
-  iDiv.className = "dropper";
-  document.getElementById("interaction").appendChild(iDiv);
-  document.getElementById("test_dropper").style.height = "10%"
-
-  // Remove and renow the skills dropper
+  // // Remove and renew the test dropper
+  // document.getElementById("test_dropper").remove()
+  // var iDiv = document.createElement("div");
+  // iDiv.id = "test_dropper";
+  // iDiv.className = "dropper";
+  // document.getElementById("interaction").appendChild(iDiv);
+  // document.getElementById("test_dropper").style.height = "10%"
+  //
+  // Remove and renew the skills dropper
   var skills = document.createElement("div");
   skills.id = "skills_temporary";
   skills.className = "dropper";
@@ -28,7 +28,4 @@ function plot_skills(skills) {
     .text(function(d) {
       return d["Name"]
     })
-
-  // Setup the drag and drop environment
-  drag_and_drop()
 }
