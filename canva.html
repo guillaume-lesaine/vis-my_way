@@ -1,44 +1,32 @@
-<!DOCTYPE html>
+<!DOCTYPE id
 <html lang="fr">
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My Way</title>
   <link rel="stylesheet" href="static/css/canva_styles.css">
   <link rel="stylesheet" href="static/css/bootstrap.css">
-  <link rel="stylesheet" href="static/css/glyphicons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script>
   <script type="text/javascript" src="static/js/jquery-csv.js"></script>
   <script type="text/javascript" src="static/js/d3.js"></script>
-
+  <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
 </head>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-primary">
-  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="https://github.com/guillaume-lesaine/vis-my_way" target="_blank">
-          GitHub
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="mx-auto order-0">
-    <a class="navbar-brand mx-auto" href="#">My Way</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  </div>
-  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-    <ul class="navbar-nav ml-auto">
+<body>
+  <div class="myway_navbar">
+    <li><a target="_blank" href="">My Way</a></li>
+    <li><a class="fa fa-github" target="_blank" href="https://github.com/guillaume-lesaine/vis-my_way" style="font-size:25px"></a></li>
+    <li style="float:right; padding: 6px 8px;">
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">?</button>
+    </li>
+    <li style="float:right; padding: 6px 8px;">
       <input type="file" id="real_file_button" hidden="hidden" onchange="read_onload(this.files)" webkitdirectory=true />
       <button type="button" id="load_data_button" class="btn btn-warning navbar-btn">Load Data</button>
-    </ul>
+    </li>
   </div>
-</nav>
 
-<body>
   <div id="export">
     <div id="header">
       <h1 id="name"></h1>
@@ -48,20 +36,56 @@
     </div>
     <div id="core">
       <div id="contacts"></div>
+      <canvas id="canvas_contacts" hidden="hidden" style="float:left"></canvas>
       <div id="timeline">
         <div id="timeline_graph"></div>
+        <canvas id="canvas_timeline_graph" hidden="hidden" style="float:left"></canvas>
         <div id="timeline_text"></div>
       </div>
     </div>
   </div>
   <div id="interaction">
     <h1 id="customization">Customization</h1>
-    <h3 class="title">Skills</h3>
+
+    <div class="modal" id="myModal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Welcome!</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <h5>My Way</h5>
+            <p>
+              My Way helps you visualize and customize your LinkedIn data in order to generate a nice PDF resume.
+            </p>
+            <h5>1 - Load your data</h5>
+            <p>
+              To create your resume, you need to export your LinkedIn data thanks to your GDPR archive at this <a href="url">address</a>. Then import the directory containing your data using <button type="button" class="btn btn-warning">Load Data</button>
+            </p>
+            <h5>2 - Customize your resume</h5>
+            <p>
+              Once loaded, your data should be displayed! You can now customize your resume. You can decide to highlight a specific experience by clicking on it or emphasize your acquisition of skills by a simple drag and drop. Here is a quick <a
+                href="url">video</a>
+              to help you with that.
+            </p>
+            <h5>3 - Save as PDF</h5>
+            <p>
+              When you are satisfied with the result, export your resume as a PDF using <button type="button" class="btn btn-danger">PDF</button>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Got it!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h3 id="title">Skills</h3>
     <div id="skills"></div>
-    <h3 class="title">Highlights</h3>
-    <h3 class="title">Export your resume!</h3>
-    <div id="export_zone">
-      <button type="button" id="export_resume_button" class="btn btn-danger">PDF</button>
+    <h3 id="title">Highlights</h3>
+    <h3 id="title">Export your resume!</h3>
+    <div id="export_zone" style="width:20%; float:left;display: flex;">
+      <button type="button" id="export_resume_button" class="btn btn-danger" style="width:100%;padding: 10% 10% ;font-size:1.1vw;">PDF</button>
     </div>
   </div>
   <script type="text/javascript" src="static/js/connections.js"></script>
@@ -69,6 +93,7 @@
   <script type="text/javascript" src="static/js/skills.js"></script>
   <script type="text/javascript" src="static/js/timeline.js"></script>
   <script type="text/javascript" src="static/js/data_loader.js"></script>
+  <script type="text/javascript" src="bundle/bundle_export.js"></script>
 </body>
 
 </html>

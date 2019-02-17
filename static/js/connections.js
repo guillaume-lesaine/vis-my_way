@@ -22,23 +22,23 @@ var plot_connections = function(connections) {
   // Creation du svg
 
   // Margin setup svg
-  var margin = {
-    top: 5,
-    right: 60,
-    bottom: 5,
-    left: 0
-  };
-  var width = document.getElementById("contacts").offsetWidth - margin.left - margin.right;
-  var height = document.getElementById("contacts").offsetHeight - margin.top - margin.bottom;
+  // var margin = {
+  //   top: 5,
+  //   right: 60,
+  //   bottom: 5,
+  //   left: 0
+  // };
+  var width = document.getElementById("contacts").offsetWidth // - margin.left - margin.right;
+  var height = document.getElementById("contacts").offsetHeight // - margin.top - margin.bottom;
 
   var svg = d3.select("#contacts").append("svg")
-    // .attr("viewBox", "0 0 " + width + " " + height)
-    // .attr("perserveAspectRatio", "xMinYMid")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("viewBox", "0 0 " + width + " " + height)
+    .attr("perserveAspectRatio", "xMinYMid")
+    // .attr("width", width) // + margin.left + margin.right)
+    // .attr("height", height) // + margin.top + margin.bottom)
     .attr("id", "svg_connections")
     .append('g')
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //Echelle de couleur
   var color = d3.scaleOrdinal(d3.schemeCategory10)
@@ -88,8 +88,8 @@ var plot_connections = function(connections) {
   	.call(d3.axisBottom().scale(xScale));
   */
   //tooltip
-  var tooltip = d3.select("#contacts").append('div')
-    .attr('class', 'hidden tooltip');
+  // var tooltip = d3.select("#contacts").append('div')
+  //   .attr('class', 'hidden tooltip');
 
   svg.append('g').selectAll("rect")
     .data(data_connections)
@@ -109,37 +109,37 @@ var plot_connections = function(connections) {
     })
     .attr("fill", color(1))
     .attr('stroke', 'none')
-    .on('mousemove', function(d) {
-      var mouse = d3.mouse(svg.node()).map(function(d) {
-        return parseInt(d);
-      });
+  // .on('mousemove', function(d) {
+  //   var mouse = d3.mouse(svg.node()).map(function(d) {
+  //     return parseInt(d);
+  //   });
 
-      tooltip
-        .attr('style',
-          'position: relative;' +
-          'left:' + (mouse[0] + 0) + 'px;' +
-          'top:' + (mouse[1] - height) + 'px;' +
-          'color: #222;' +
-          'background-color: #fff;' +
-          'padding: .5em;' +
-          'text-shadow: #f5f5f5 0 1px 0;' +
-          'border-radius: 2px;' +
-          'opacity: 0.9;' +
-          'width: 100px'
-        )
-        .html(d.key + ': ' + d.value);
-      d3.selectAll('rect')
-        .attr("opacity", function(e) {
-          if (e === d) {
-            return 1
-          } else {
-            return 0.4
-          }
-        });
-    })
-    .on('mouseout', function() {
-      tooltip.attr('style', 'display: none');
-      d3.selectAll('rect')
-        .attr("opacity", 1);
-    })
+  //   tooltip
+  //     .attr('style',
+  //       'position: relative;' +
+  //       'left:' + (mouse[0] + 0) + 'px;' +
+  //       'top:' + (mouse[1] - height) + 'px;' +
+  //       'color: #222;' +
+  //       'background-color: #fff;' +
+  //       'padding: .5em;' +
+  //       'text-shadow: #f5f5f5 0 1px 0;' +
+  //       'border-radius: 2px;' +
+  //       'opacity: 0.9;' +
+  //       'width: 100px'
+  //     )
+  //     .html(d.key + ': ' + d.value);
+  //   d3.selectAll('rect')
+  //     .attr("opacity", function(e) {
+  //       if (e === d) {
+  //         return 1
+  //       } else {
+  //         return 0.4
+  //       }
+  //     });
+  // })
+  // .on('mouseout', function() {
+  //   tooltip.attr('style', 'display: none');
+  //   d3.selectAll('rect')
+  //     .attr("opacity", 1);
+  // })
 }

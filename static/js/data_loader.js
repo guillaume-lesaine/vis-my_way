@@ -43,8 +43,23 @@ files_additional_treatment = ["Account Status History.csv", "Endorsement Receive
 
 // Event listener allowing to detect loading of page
 document.addEventListener("DOMContentLoaded", function() {
-  //console.log("TOPTOPTOP");
+  updateHeight()
   read_initial()
+});
+
+// Function to keep the size of the export zone as a A4 format
+function updateHeight() {
+  var div_export = $('#export');
+  var div_interaction = $('#interaction');
+  var width = div_export.width();
+
+  div_export.css('height', width * 1.414);
+  div_interaction.css('height', width * 1.414);
+}
+
+// Event listener updating the height of the export and interaction zones on resize
+window.addEventListener("resize", function() {
+  updateHeight()
 });
 
 // Function to setup the page importing data from the server

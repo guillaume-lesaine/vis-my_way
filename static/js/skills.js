@@ -1,5 +1,4 @@
 function plot_skills(skills) {
-  console.log(skills)
   data_skills = skills[0];
   d3.select("#skills").selectAll("text").remove()
   d3.select("#skills").selectAll("text")
