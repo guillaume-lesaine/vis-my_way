@@ -1,67 +1,34 @@
 function plot_skills(skills) {
   data_skills = skills[0];
-  d3.select("#skills").selectAll("text").remove()
+
+  // Remove and renew the test dropper
+  document.getElementById("test_dropper").remove()
+  var iDiv = document.createElement("div");
+  iDiv.id = "test_dropper";
+  iDiv.className = "dropper";
+  document.getElementById("interaction").appendChild(iDiv);
+  document.getElementById("test_dropper").style.height = "10%"
+
+  // Remove and renow the skills dropper
+  var skills = document.createElement("div");
+  skills.id = "skills_temporary";
+  skills.className = "dropper";
+  document.getElementById("skills").insertAdjacentHTML('afterend', skills.outerHTML);
+  document.getElementById("skills").remove()
+  document.getElementById("skills_temporary").setAttribute("id", "skills")
+
+  // Fill the skill
   d3.select("#skills").selectAll("text")
     .data(data_skills)
     .enter()
-    .append("div")
-    .attr("class", "draggable")
-    .attr("draggable", "true")
+    .append("div") // To drag and drop
+    .attr("class", "draggable") // To drag and drop
+    .attr("draggable", "true") // To drag and drop
     .append("text")
     .text(function(d) {
-      console.log(1)
       return d["Name"]
     })
 
-  drag_and_drop_trigger()
-}
-
-function drag_and_drop_trigger() {
-  var dndHandler = {
-    draggedElement: null, // Propriété pointant vers l'élément en cours de déplacement
-
-    applyDragEvents: function(element) {
-      element.draggable = true;
-      var dndHandler = this; // Cette variable est nécessaire pour que l'événement "dragstart" ci-dessous accède facilement au namespace "dndHandler"
-      element.addEventListener('dragstart', function(e) {
-        dndHandler.draggedElement = e.target; // On sauvegarde l'élément en cours de déplacement
-        e.dataTransfer.setData('text/plain', ''); // Nécessaire pour Firefox
-      }, false);
-    },
-
-    applyDropEvents: function(dropper) {
-      dropper.addEventListener('dragover', function(e) {
-        e.preventDefault(); // On autorise le drop d'éléments
-        this.className = 'dropper drop_hover'; // Et on applique le design adéquat à notre zone de drop quand un élément la survole
-      }, false);
-      dropper.addEventListener('dragleave', function() {
-        this.className = 'dropper'; // On revient au design de base lorsque l'élément quitte la zone de drop
-      });
-      var dndHandler = this; // Cette variable est nécessaire pour que l'événement "drop" ci-dessous accède facilement au namespace "dndHandler"
-      dropper.addEventListener('drop', function(e) {
-        var target = e.target,
-          draggedElement = dndHandler.draggedElement, // Récupération de l'élément concerné
-          clonedElement = draggedElement.cloneNode(true); // On créé immédiatement le clone de cet élément
-        while (target.className.indexOf('dropper') == -1) { // Cette boucle permet de remonter jusqu'à la zone de drop parente
-          target = target.parentNode;
-        }
-
-        target.className = 'dropper'; // Application du design par défaut
-        clonedElement = target.appendChild(clonedElement); // Ajout de l'élément cloné à la zone de drop actuelle
-        dndHandler.applyDragEvents(clonedElement); // Nouvelle application des événements qui ont été perdus lors du cloneNode()
-        draggedElement.parentNode.removeChild(draggedElement); // Suppression de l'élément d'origine
-      });
-    }
-  };
-
-  var elements = document.querySelectorAll('.draggable'),
-    elementsLen = elements.length;
-  for (var i = 0; i < elementsLen; i++) {
-    dndHandler.applyDragEvents(elements[i]); // Application des paramètres nécessaires aux élément déplaçables
-  }
-  var droppers = document.querySelectorAll('.dropper'),
-    droppersLen = droppers.length;
-  for (var i = 0; i < droppersLen; i++) {
-    dndHandler.applyDropEvents(droppers[i]); // Application des événements nécessaires aux zones de drop
-  }
+  // Setup the drag and drop environment
+  drag_and_drop()
 }
