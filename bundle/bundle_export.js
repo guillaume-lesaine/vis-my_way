@@ -8177,7 +8177,6 @@ $("#export_resume_button").click(function() {
   chart_timeline_graph_canvas.setAttribute("height", chart_timeline_graph_style.height)
   chart_timeline_graph_div.setAttribute("hidden", "hidden")
   var chart_timeline_graph_string = canvg(document.getElementById('canvas_timeline_graph'), chart_timeline_graph_svg.outerHTML)
-  console.log(chart_timeline_graph_style)
 
   // Turn the #export div to a canvas
   html2canvas(document.getElementById("export")).then(function(canvas) {
