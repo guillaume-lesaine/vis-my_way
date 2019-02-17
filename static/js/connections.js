@@ -1,7 +1,9 @@
 var plot_connections = function(connections) {
   //Data preparations
   var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
+  var parseDateTickFormat = d3.timeParse("%b %Y"); //Used to display only years in ticks
   var formatMY = d3.timeFormat("%b %Y"); //format month year
+  var formatY = d3.timeFormat("%Y"); //Used to display only years in ticks
   connections[0].forEach(function(d, i) {
     d['Connected On'] = parseDate(d['Connected On']);
     d.month_year = formatMY(d['Connected On']);
@@ -20,25 +22,20 @@ var plot_connections = function(connections) {
   d3.select("#svg_connections").remove();
 
   // Creation du svg
-
-  // Margin setup svg
-  // var margin = {
-  //   top: 5,
-  //   right: 60,
-  //   bottom: 5,
-  //   left: 0
-  // };
   var width = document.getElementById("contacts").offsetWidth // - margin.left - margin.right;
   var height = document.getElementById("contacts").offsetHeight // - margin.top - margin.bottom;
+
+  // width = w1 + w2
+  // w1 : width chart
+  // w2 : width label zone
+  var w1 = width * 0.7
+  var w2 = width * 0.3
 
   var svg = d3.select("#contacts").append("svg")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("perserveAspectRatio", "xMinYMid")
-    // .attr("width", width) // + margin.left + margin.right)
-    // .attr("height", height) // + margin.top + margin.bottom)
     .attr("id", "svg_connections")
     .append('g')
-  //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //Echelle de couleur
   var color = d3.scaleOrdinal(d3.schemeCategory10)
@@ -58,7 +55,7 @@ var plot_connections = function(connections) {
     .domain([0, d3.max(data_connections, function(d) {
       return d.value;
     })])
-    .rangeRound([width, 0]);
+    .rangeRound([width - w2, 0]);
 
   //selectionner uniquement les mois de janvier
   var yAxisLabel = data_connections.map(function(d) {
@@ -71,13 +68,19 @@ var plot_connections = function(connections) {
       }
     })
 
+  console.log(yAxisLabel)
+
   var yAxis = d3.axisRight()
     .scale(yScale)
     .tickValues(yAxisLabel)
+    .tickFormat(function(d) {
+      return formatY(parseDateTickFormat(d))
+    })
+
 
   //Ajout de l'axe y
   svg.append('g')
-    .attr('transform', 'translate(' + width + ',0)')
+    .attr('transform', 'translate(' + w1 + ',0)')
     .attr('class', 'y axis')
     .call(yAxis);
 
@@ -105,7 +108,7 @@ var plot_connections = function(connections) {
       return yScale.bandwidth();
     })
     .attr("width", function(d, i) {
-      return width - xScale(d.value);
+      return width - w2 - xScale(d.value);
     })
     .attr("fill", color(1))
     .attr('stroke', 'none')
