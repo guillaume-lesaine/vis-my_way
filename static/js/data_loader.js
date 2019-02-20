@@ -34,6 +34,15 @@ method_store = [{
   "method": plot_skills,
   "files": ["Skills.csv"]
 }, {
+  "method": plot_languages,
+  "files": ["Languages.csv"]
+}, {
+  "method": plot_test_scores,
+  "files": ["Test Scores.csv"]
+}, {
+  "method": plot_activities,
+  "files": ["Education.csv"]
+}, {
   "method": plot_timeline,
   "files": ["Education.csv", "Positions.csv", "Projects.csv"]
 }, {

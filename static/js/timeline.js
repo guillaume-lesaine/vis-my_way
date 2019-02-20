@@ -127,8 +127,12 @@ function plot_timeline(data_timeline) {
     .rangeRound([0, width])
     .paddingInner(0.3);
 
+  //tooltip
+  var tooltip = d3.select("#timeline_graph").append('div')
+	.attr('class', 'hidden tooltip'); // hidden & tooltip
+
   //rect
-  svg.append('g').selectAll("rect")
+  svg.append('g').selectAll(".rect_timeline")
     .data(data_timeline)
     .enter()
     .append("rect")
@@ -148,6 +152,67 @@ function plot_timeline(data_timeline) {
       return color(i);
     })
     .attr('stroke', "black")
+	.attr("class","rect_timeline")
+	.on('mousemove', function(d) {
+		var mouse = d3.mouse(svg.node()).map(function(d) {
+		return parseInt(d);
+		});
+		tooltip.classed('hidden', false)
+			.attr('style', 'left:' + (mouse[0] + 20) +
+					'px; top:' + (mouse[1] - 80 - height) + 'px')
+			.html(function() {
+			  if (d.type === "education") {
+				return d['School Name'];
+			  }
+			  if (d.type === "positions") {
+				return d['Company Name'] + " - " + d['Title'];
+			  }
+			  if (d.type === "projects") {
+				return d['Title']
+			  }
+			});
+		d3.selectAll('.rect_timeline')
+		   .attr("opacity", function(e) {
+			 if (e === d) {
+			   return 1
+			 } else {
+			   return 0.2
+			 }
+		   });
+	   })
+
+	.on('mouseout', function() {
+		tooltip.classed('hidden', true);
+		d3.selectAll('.rect_timeline')
+		.attr("opacity", 1);
+	})
+	//click to display title subtitle skills_box
+	.on('click', function(d,i) {
+		//state = 0 --> add title
+		if (d3.select('#text_box_' + i).attr('state')==='0') {
+			d3.select('#title_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).attr('state','1');
+		}
+		//state = 1 --> add subtitle
+		else if (d3.select('#text_box_' + i).attr('state')==='1') {
+			d3.select('#subtitle_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).attr('state','2');
+		}
+		//state = 2 --> add skills_box
+		else if (d3.select('#text_box_' + i).attr('state')==='2') {
+			d3.select('#skills_box_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).attr('state','3');
+		}
+		//state = 3 --> hide title + subtitle + skills_box
+		else if (d3.select('#text_box_' + i).attr('state')==='3') {
+			d3.select('#title_' + i).classed('hidden',true);
+			d3.select('#subtitle_' + i).classed('hidden',true);
+			d3.select('#skills_box_' + i).classed('hidden',true);
+			d3.select('#text_box_' + i).attr('state','0');
+		}
+		
+	})
+	
 
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
@@ -156,20 +221,9 @@ function plot_timeline(data_timeline) {
     .append("div") //text_box
     .attr("id", (d, i) => "text_box_" + i)
     .attr("class", "text_box")
+	.attr("state", "1") //0:rien 1:title 2:+subtitle 3:+skills_box
 
-  var text_box_text = text_box.append("div") // text box left
-    .attr("class", "text_box_text")
-    .attr("id", function(d, i) {
-      return "text_box_text_" + i
-    })
-
-  var text_box_addskills = text_box.append("div") // text box right
-    .attr("class", "text_box_addskills")
-    .attr("id", function(d, i) {
-      return "text_box_addskills_" + i
-    })
-
-  text_box_text.append("div") //title
+	var title = text_box.append("div") //title
     .attr("class", "title")
     .attr("id", function(d, i) {
       return "title_" + i
@@ -185,12 +239,12 @@ function plot_timeline(data_timeline) {
         return d['Company Name'] + " - " + d['Title'] + " - " + d['Location'];
       }
       if (d.type === "projects") {
-        return d['Title']
+        return d['Title'];
       }
     });
 
-  text_box_text.append("div") //subtitle
-    .attr("class", "subtitle")
+  var subtitle = text_box.append("div") //subtitle
+    .attr("class", "subtitle hidden")
     .attr("id", function(d, i) {
       return "subtitle_" + i
     })
@@ -206,20 +260,11 @@ function plot_timeline(data_timeline) {
       }
     });
 
-  var skills_box = text_box_text.append("div") //skills_box
-    .attr("class", "dropper")
+  var skills_box = text_box.append("div") //skills_box
+    .attr("class", "dropper hidden")
     .attr("id", function(d, i) {
       return "skills_box_" + i
     })
     .style("min-height", "3vw")
-
-  text_box_addskills.append("button")
-    .attr("class", "btn btn-danger")
-    .html("+")
-    .on("click", function(d, i) {
-      d3.selectAll("#skills_box" + i)
-        .append("div")
-        .attr("class", "skill_box")
-        .attr("id", "skill_box" + i);
-    })
+	.style("width", "98%")
 }

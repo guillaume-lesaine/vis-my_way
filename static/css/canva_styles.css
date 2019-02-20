@@ -182,16 +182,6 @@ li a:hover {
   float: left;
 }
 
-.text_box_text{
-  width: 90%;
-  float: left;
-}
-
-.text_box_addskills{
-  width: 10%;
-  float: left;
-}
-
 .title{
   width: 100%;
   float: top;
@@ -206,14 +196,6 @@ li a:hover {
   font-size: 0.8vw;
 }
 
-/* .skill_box{
-  width: 50px;
-  height: 20px;
-  float: left;
-  margin: 3px;
-  border: 1px solid #aaaaaa;
-} */
-
 #timeline_graph{
   width: 12%;
   height: 100%;
@@ -226,4 +208,19 @@ li a:hover {
   float: left;
   margin-left: 1%;
   margin-right: 1%
+}
+
+div.tooltip {
+	color: #222;
+	background-color: #fff;
+	padding: .5em;
+	text-shadow: #f5f5f5 0 1px 0;
+	border-radius: 2px;
+	opacity: 0.9;
+	position: relative;
+	width: 300%;
+}
+
+div.hidden {
+	display: none;
 }
