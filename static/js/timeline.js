@@ -108,6 +108,7 @@ function plot_timeline(data_timeline) {
     .attr("perserveAspectRatio", "xMinYMid")
     .attr("id", "svg_timeline_graph")
     .append('g')
+	.attr("transform", "translate(" + width*0.05 + ", 0)");
 
   //Echelle de couleur
   var color = d3.scaleOrdinal(d3.schemePaired)
@@ -124,7 +125,7 @@ function plot_timeline(data_timeline) {
   //echelle x
   var xScale = d3.scaleBand()
     .domain(["education", "positions", "projects"])
-    .rangeRound([0, width])
+    .rangeRound([0, 0.9*width])
     .paddingInner(0.3);
 
   //tooltip
@@ -151,7 +152,7 @@ function plot_timeline(data_timeline) {
     .attr("fill", function(d, i) {
       return color(i);
     })
-    .attr('stroke', "black")
+    //.attr('stroke', "black")
 	.attr("class","rect_timeline")
 	.on('mousemove', function(d) {
 		var mouse = d3.mouse(svg.node()).map(function(d) {
@@ -191,6 +192,7 @@ function plot_timeline(data_timeline) {
 		//state = 0 --> add title
 		if (d3.select('#text_box_' + i).attr('state')==='0') {
 			d3.select('#title_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).classed('hidden',false);
 			d3.select('#text_box_' + i).attr('state','1');
 		}
 		//state = 1 --> add subtitle
@@ -205,6 +207,7 @@ function plot_timeline(data_timeline) {
 		}
 		//state = 3 --> hide title + subtitle + skills_box
 		else if (d3.select('#text_box_' + i).attr('state')==='3') {
+			d3.select('#text_box_' + i).classed('hidden',true);
 			d3.select('#title_' + i).classed('hidden',true);
 			d3.select('#subtitle_' + i).classed('hidden',true);
 			d3.select('#skills_box_' + i).classed('hidden',true);
@@ -222,15 +225,59 @@ function plot_timeline(data_timeline) {
     .attr("id", (d, i) => "text_box_" + i)
     .attr("class", "text_box")
 	.attr("state", "1") //0:rien 1:title 2:+subtitle 3:+skills_box
+	.attr('style', function(d,i) {
+		if (i===0) {
+		return "border-top: 5px solid " + color(i) + ";" +
+		"position: absolute;" +
+		"width: 100%;" +
+		"top:0" + 
+		+"px"
+		}
+		else {
+		return "border-top: 5px solid " + color(i) + ";" +
+		"position: absolute;" +
+		"width: 100%;" +
+		"top:" + Math.max(yScale(d.end_date),d3.select('#text_box_' + String(Number(i) - 1)).node().getBoundingClientRect().bottom)
+		+"px"
+		}
+	})
+	//click to display title subtitle skills_box
+	.on('click', function(d,i) {
+		//state = 0 --> add title
+		if (d3.select('#text_box_' + i).attr('state')==='0') {
+			d3.select('#title_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).attr('state','1');
+		}
+		//state = 1 --> add subtitle
+		else if (d3.select('#text_box_' + i).attr('state')==='1') {
+			d3.select('#subtitle_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).attr('state','2');
+		}
+		//state = 2 --> add skills_box
+		else if (d3.select('#text_box_' + i).attr('state')==='2') {
+			d3.select('#skills_box_' + i).classed('hidden',false);
+			d3.select('#text_box_' + i).attr('state','3');
+		}
+		//state = 3 --> hide title + subtitle + skills_box
+		else if (d3.select('#text_box_' + i).attr('state')==='3') {
+			d3.select('#text_box_' + i).classed('hidden',true);
+			d3.select('#title_' + i).classed('hidden',true);
+			d3.select('#subtitle_' + i).classed('hidden',true);
+			d3.select('#skills_box_' + i).classed('hidden',true);
+			d3.select('#text_box_' + i).attr('state','0');
+		}
+		
+	})
 
 	var title = text_box.append("div") //title
     .attr("class", "title")
     .attr("id", function(d, i) {
       return "title_" + i
     })
-    .attr("style", function(d, i) {
-      return "text-decoration-color:" + color(i);
-    })
+    //.attr("style", function(d, i) {
+    //  return "text-decoration: underline; text-decoration-color:" + color(i);
+    //})
     .html(function(d) {
       if (d.type === "education") {
         return d['School Name'];

@@ -25,7 +25,6 @@ function plot_activities(activities) {
     .attr("class", "draggable") // To drag and drop
     .attr("draggable", "true") // To drag and drop
 	.classed('hidden',function(d) {
-		console.log(d.Activities.length === 0);
 		return d.Activities.length === 0
 	})
     .append("text")

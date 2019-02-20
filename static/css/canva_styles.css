@@ -162,6 +162,7 @@ li a:hover {
   margin-right: 1%;
   margin-top: 1%;
   margin-bottom: 1%;
+  padding:1%;
 }
 
 #connections{
@@ -175,6 +176,7 @@ li a:hover {
   width: 85%;
   height: 100%;
   float: left;
+  position: relative;
 }
 
 .text_box{
@@ -185,8 +187,6 @@ li a:hover {
 .title{
   width: 100%;
   float: top;
-  text-decoration: underline;
-  text-decoration-style: solid;
   font-size: 1.2vw;
 }
 
