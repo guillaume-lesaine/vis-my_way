@@ -176,7 +176,6 @@ li a:hover {
   width: 85%;
   height: 100%;
   float: left;
-  position: relative;
 }
 
 .text_box{
@@ -207,7 +206,8 @@ li a:hover {
   height: 100%;
   float: left;
   margin-left: 1%;
-  margin-right: 1%
+  margin-right: 1%;
+  position: relative;
 }
 
 div.tooltip {

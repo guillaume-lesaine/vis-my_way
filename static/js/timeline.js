@@ -226,20 +226,11 @@ function plot_timeline(data_timeline) {
     .attr("class", "text_box")
 	.attr("state", "1") //0:rien 1:title 2:+subtitle 3:+skills_box
 	.attr('style', function(d,i) {
-		if (i===0) {
 		return "border-top: 5px solid " + color(i) + ";" +
 		"position: absolute;" +
 		"width: 100%;" +
-		"top:0" + 
+		"top:" + yScale(d.end_date)
 		+"px"
-		}
-		else {
-		return "border-top: 5px solid " + color(i) + ";" +
-		"position: absolute;" +
-		"width: 100%;" +
-		"top:" + Math.max(yScale(d.end_date),d3.select('#text_box_' + String(Number(i) - 1)).node().getBoundingClientRect().bottom)
-		+"px"
-		}
 	})
 	//click to display title subtitle skills_box
 	.on('click', function(d,i) {
