@@ -269,8 +269,7 @@ function plot_timeline_text(data_timeline,color,yScale,state_array) {
       return "skills_box_" + i
     })
     .style("min-height", "3vw")
-	.style("width", "98%")
-	//.on('change', plot_timeline_text(data_timeline,color,yScale,state_array));
+	.style("width", "98%");
 	
 	//hidden according to the state
 	state_array.forEach(function(d,i) {
