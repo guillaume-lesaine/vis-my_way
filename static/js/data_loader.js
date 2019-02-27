@@ -82,7 +82,7 @@ function read_initial() {
       $.ajax({
         type: "GET",
         async: false,
-        url: "./data/Data_L/" + keys_dict[i],
+        url: "./data/Data_example/" + keys_dict[i],
         success: function(file_content) {
           data_store_onfileload[keys_dict[i]] = $.csv.toObjects(file_content)
           if (i === 8) {
