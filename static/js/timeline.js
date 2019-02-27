@@ -210,7 +210,7 @@ function plot_timeline(data_timeline) {
 }
 
 function plot_timeline_text(data_timeline,color,yScale,state_array) {
-	d3.select("#svg_timeline_text").remove();
+	d3.select("#timeline_text").selectAll(".text_box").remove();
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
     .data(data_timeline)
