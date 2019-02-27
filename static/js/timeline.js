@@ -199,7 +199,12 @@ function plot_timeline(data_timeline) {
 		//console.log(state_array);
 		plot_timeline_text(data_timeline,color,yScale,state_array);
 	})
-
+	
+	d3.select("#timeline_text")
+	.on('drop', function() {
+		plot_timeline_text(data_timeline,color,yScale,state_array);
+	
+	})
 	//d3.select(".text_box").remove();
 	plot_timeline_text(data_timeline,color,yScale,state_array);
 }
@@ -341,5 +346,4 @@ function plot_timeline_text(data_timeline,color,yScale,state_array) {
 		}
 		
 	}
-	//skills_box.on('end', plot_timeline_text(data_timeline,color,yScale,state_array));
 }
