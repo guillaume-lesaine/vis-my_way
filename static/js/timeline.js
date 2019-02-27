@@ -137,7 +137,7 @@ function plot_timeline(data_timeline) {
 	data_timeline.forEach(function(d) {
 		state_array.push("1");
 	})
-
+	
   //rect
   svg.append('g').selectAll(".rect_timeline")
     .data(data_timeline)
@@ -210,7 +210,7 @@ function plot_timeline(data_timeline) {
 }
 
 function plot_timeline_text(data_timeline,color,yScale,state_array) {
-	
+	d3.select("#svg_timeline_text").remove();
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
     .data(data_timeline)
