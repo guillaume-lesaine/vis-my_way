@@ -132,6 +132,12 @@ function plot_timeline(data_timeline) {
   var tooltip = d3.select("#timeline_graph").append('div')
 	.attr('class', 'hidden tooltip'); // hidden & tooltip
 
+	//state array
+	var state_array = []; //array of the state of each text_box (0,1,2,3)
+	data_timeline.forEach(function(d) {
+		state_array.push("1");
+	})
+	
   //rect
   svg.append('g').selectAll(".rect_timeline")
     .data(data_timeline)
@@ -187,36 +193,24 @@ function plot_timeline(data_timeline) {
 		d3.selectAll('.rect_timeline')
 		.attr("opacity", 1);
 	})
-	//click to display title subtitle skills_box
+	//click to display title subtitle skills_box --> change state array
 	.on('click', function(d,i) {
-		//state = 0 --> add title
-		if (d3.select('#text_box_' + i).attr('state')==='0') {
-			d3.select('#title_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).attr('state','1');
-		}
-		//state = 1 --> add subtitle
-		else if (d3.select('#text_box_' + i).attr('state')==='1') {
-			d3.select('#subtitle_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).attr('state','2');
-		}
-		//state = 2 --> add skills_box
-		else if (d3.select('#text_box_' + i).attr('state')==='2') {
-			d3.select('#skills_box_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).attr('state','3');
-		}
-		//state = 3 --> hide title + subtitle + skills_box
-		else if (d3.select('#text_box_' + i).attr('state')==='3') {
-			d3.select('#text_box_' + i).classed('hidden',true);
-			d3.select('#title_' + i).classed('hidden',true);
-			d3.select('#subtitle_' + i).classed('hidden',true);
-			d3.select('#skills_box_' + i).classed('hidden',true);
-			d3.select('#text_box_' + i).attr('state','0');
-		}
-		
+		state_array[i] = String((Number(state_array[i])+1)%4);
+		//console.log(state_array);
+		plot_timeline_text(data_timeline,color,yScale,state_array);
 	})
 	
+	d3.select("#timeline_text")
+	.on('drop', function() {
+		plot_timeline_text(data_timeline,color,yScale,state_array);
+	
+	})
+	//d3.select(".text_box").remove();
+	plot_timeline_text(data_timeline,color,yScale,state_array);
+}
 
+function plot_timeline_text(data_timeline,color,yScale,state_array) {
+	d3.select("#timeline_text").selectAll("div").remove();
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
     .data(data_timeline)
@@ -224,51 +218,22 @@ function plot_timeline(data_timeline) {
     .append("div") //text_box
     .attr("id", (d, i) => "text_box_" + i)
     .attr("class", "text_box")
-	.attr("state", "1") //0:rien 1:title 2:+subtitle 3:+skills_box
+	.attr("state", function(d,i){ //0:rien 1:title 2:+subtitle 3:+skills_box
+		return state_array[i];
+	})
 	.attr('style', function(d,i) {
 		return "border-top: 5px solid " + color(i) + ";" +
 		"position: absolute;" +
 		"width: 100%;" +
+		//"left: 0%;" +
 		"top:" + yScale(d.end_date)
 		+"px"
 	})
-	//click to display title subtitle skills_box
-	.on('click', function(d,i) {
-		//state = 0 --> add title
-		if (d3.select('#text_box_' + i).attr('state')==='0') {
-			d3.select('#title_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).attr('state','1');
-		}
-		//state = 1 --> add subtitle
-		else if (d3.select('#text_box_' + i).attr('state')==='1') {
-			d3.select('#subtitle_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).attr('state','2');
-		}
-		//state = 2 --> add skills_box
-		else if (d3.select('#text_box_' + i).attr('state')==='2') {
-			d3.select('#skills_box_' + i).classed('hidden',false);
-			d3.select('#text_box_' + i).attr('state','3');
-		}
-		//state = 3 --> hide title + subtitle + skills_box
-		else if (d3.select('#text_box_' + i).attr('state')==='3') {
-			d3.select('#text_box_' + i).classed('hidden',true);
-			d3.select('#title_' + i).classed('hidden',true);
-			d3.select('#subtitle_' + i).classed('hidden',true);
-			d3.select('#skills_box_' + i).classed('hidden',true);
-			d3.select('#text_box_' + i).attr('state','0');
-		}
-		
-	})
-
 	var title = text_box.append("div") //title
     .attr("class", "title")
     .attr("id", function(d, i) {
       return "title_" + i
     })
-    //.attr("style", function(d, i) {
-    //  return "text-decoration: underline; text-decoration-color:" + color(i);
-    //})
     .html(function(d) {
       if (d.type === "education") {
         return d['School Name'];
@@ -304,5 +269,80 @@ function plot_timeline(data_timeline) {
       return "skills_box_" + i
     })
     .style("min-height", "3vw")
-	.style("width", "98%")
+	.style("width", "98%");
+	
+	//hidden according to the state
+	state_array.forEach(function(d,i) {
+	//state = 0 nothing
+	if (state_array[i]==='0') {
+		d3.select('#text_box_' + i).classed('hidden',true);
+		d3.select('#title_' + i).classed('hidden',true);
+		d3.select('#subtitle_' + i).classed('hidden',true);
+		d3.select('#skills_box_' + i).classed('hidden',true);
+	}
+	//state = 1 --> text_box + title
+	else if (state_array[i]==='1') {
+		d3.select('#text_box_' + i).classed('hidden',false);
+		d3.select('#title_' + i).classed('hidden',false);
+		d3.select('#subtitle_' + i).classed('hidden',true);
+		d3.select('#skills_box_' + i).classed('hidden',true);
+	}
+	//state = 2 --> text_box + title + subtitle
+	else if (state_array[i]==='2') {
+		//d3.select('#text_box_' + i).classed('hidden',false);
+		//d3.select('#title_' + i).classed('hidden',false);
+		d3.select('#subtitle_' + i).classed('hidden',false);
+		//d3.select('#skills_box_' + i).classed('hidden',true);
+
+	}
+	//state = 3 --> text_box + title + subtitle + skills_box
+	else if (state_array[i]==='3') {
+		d3.select('#text_box_' + i).classed('hidden',false);
+		d3.select('#title_' + i).classed('hidden',false);
+		d3.select('#subtitle_' + i).classed('hidden',false);
+		d3.select('#skills_box_' + i).classed('hidden',false);
+	}
+	})
+	
+
+	//management of the layout 100% or 50%
+	for (i = 1; i < data_timeline.length; i++) { //i=1,2,3,4,5,6,7
+		if (yScale(data_timeline[i].end_date) < yScale(data_timeline[i-1].end_date) + d3.select('#text_box_' + String(Number(i) - 1)).node().getBoundingClientRect().height) {
+			//console.log(i-1 + " deborde sur " + i);
+			//console.log(yScale(data_timeline[i-1].end_date));
+			//console.log(d3.select('#text_box_' + String(Number(i) - 1)).node().getBoundingClientRect().height);
+			//console.log(" ");
+			//texte_box i-1 --> 50% left
+			d3.select("#text_box_"+ String(i-1))
+				.attr("style",
+				"border-top: 5px solid " + color(i-1) + ";" +
+				"position: absolute;" +
+				"width: 50%;" +
+				//"left: 50%;" +
+				"top:" + yScale(data_timeline[i-1].end_date) +"px"
+				);
+			//texte_box i --> 50% right
+			d3.select("#text_box_"+i)
+				.attr("style",
+				"border-top: 5px solid " + color(i) + ";" +
+				"position: absolute;" +
+				"width: 50%;" +
+				"left: 50%;" +
+				"top:" + yScale(data_timeline[i].end_date) +"px"
+				);
+		}
+		else {
+			//console.log(i-1 + " ne deborde pas sur " + i)
+			//console.log(" ");
+			d3.select("#text_box_"+i)
+				.attr("style",
+				"border-top: 5px solid " + color(i) + ";" +
+				"position: absolute;" +
+				"width: 100%;" +
+				//"left: 50%;" +
+				"top:" + yScale(data_timeline[i].end_date) +"px"
+				);
+		}
+		
+	}
 }
