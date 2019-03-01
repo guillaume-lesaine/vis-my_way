@@ -28,9 +28,6 @@ method_store = [{
   "method": plot_header,
   "files": ["Profile.csv"]
 }, {
-  "method": plot_connections,
-  "files": ["Connections.csv"]
-}, {
   "method": plot_skills,
   "files": ["Skills.csv"]
 }, {
@@ -43,8 +40,8 @@ method_store = [{
   "method": plot_activities,
   "files": ["Education.csv"]
 }, {
-  "method": plot_timeline,
-  "files": ["Education.csv", "Positions.csv", "Projects.csv"]
+  "method": plot_core,
+  "files": ["Education.csv", "Positions.csv", "Projects.csv", "Connections.csv"]
 }, {
   "method": drag_and_drop, //The drag and drop activation is conducted once everything else has been generated
   "files": []

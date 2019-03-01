@@ -1,8 +1,14 @@
-function plot_timeline(data_timeline) {
-  data_education = data_timeline[0]
-  data_positions = data_timeline[1]
-  data_projects = data_timeline[2]
-
+function plot_core(data_core) {
+  data_education = data_core[0]
+  data_positions = data_core[1]
+  data_projects = data_core[2]
+  //data_core[3] --> contacts
+	
+	//Echelle de couleur
+  var color = d3.scaleOrdinal(d3.schemePaired)
+	
+  //###___timeline___###
+  
   //Education: min 1 year
   data_education.forEach(function(d) {
     if (d['Start Date'] === d['End Date']) {
@@ -89,6 +95,34 @@ function plot_timeline(data_timeline) {
     }
 
   })
+  plot_timeline(data_timeline,color);
+  
+  //###___contacts___###
+  
+  //Data preparations
+  var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
+  var formatMY = d3.timeFormat("%b %Y"); //format month year
+  
+  data_core[3].forEach(function(d, i) {
+    d['Connected On'] = parseDate(d['Connected On']);
+    d.month_year = formatMY(d['Connected On']);
+  })
+
+  //Transformation des données
+  var data_connections = d3.nest()
+    .key(function(d) {
+      return d.month_year
+    })
+    .rollup(function(v) {
+      return v.length;
+    })
+    .entries(data_core[3]);
+	
+  plot_connections(data_connections,data_timeline,color);
+  
+}
+
+function plot_timeline(data_timeline,color) {
 
   // Creation du svg graph
 
@@ -110,8 +144,6 @@ function plot_timeline(data_timeline) {
     .append('g')
 	.attr("transform", "translate(" + width*0.05 + ", 0)");
 
-  //Echelle de couleur
-  var color = d3.scaleOrdinal(d3.schemePaired)
 
   //echelle verticale y
   var yScale = d3.scaleTime()
@@ -207,6 +239,123 @@ function plot_timeline(data_timeline) {
 	})
 	//d3.select(".text_box").remove();
 	plot_timeline_text(data_timeline,color,yScale,state_array);
+}
+
+function plot_connections(data_connections,data_timeline,color) {
+	d3.select("#svg_connections").remove();
+	
+	var formatY = d3.timeFormat("%Y"); //Used to display only years in ticks
+	var parseDate_MY = d3.timeParse("%b %Y");
+	var formatMY = d3.timeFormat("%b %Y");
+
+  // Creation du svg
+  var width = document.getElementById("connections").offsetWidth // - margin.left - margin.right;
+  var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
+
+  // width = w1 + w2
+  // w1 : width chart
+  // w2 : width label zone
+  var w1 = width * 0.7
+  var w2 = width * 0.3
+
+  var svg = d3.select("#connections").append("svg")
+    .attr("viewBox", "0 0 " + width + " " + height)
+    .attr("perserveAspectRatio", "xMinYMid")
+    .attr("id", "svg_connections")
+    .append('g')
+
+  //Creation des echelles
+  
+  var domain_y = d3.timeMonth.range(d3.min(data_timeline, function(d) { 
+		return d.start_date
+    }),d3.max(data_timeline, function(d) {
+		return d.end_date
+    }))
+	
+  //echelle verticale y
+  var yScale = d3.scaleBand()
+	.domain(domain_y.map(function(d) {return formatMY(d)}))
+    .paddingInner(0.05)
+    .range([height,0]);
+
+  //echelle count x
+  var xScale = d3.scaleLinear()
+    .domain([0, d3.max(data_connections, function(d) {
+      return d.value;
+    })])
+    .rangeRound([width - w2, 0]);
+	
+  //selectionner uniquement les mois de janvier
+  var yAxisLabel = domain_y.map(function(d) {
+    return formatMY(d)
+  }).filter(
+    function(d) {
+      var words = d.split(' ');
+      if (words[0] === 'Jan') {
+        return d;
+      }
+    })
+
+  var yAxis = d3.axisRight()
+    .scale(yScale)
+    .tickValues(yAxisLabel)
+    .tickFormat(function(d) {
+      return formatY(parseDate_MY(d))
+    })
+
+
+  //Ajout de l'axe y
+  svg.append('g')
+    .attr('transform', 'translate(' + w1 + ',0)')
+    .attr('class', 'y axis')
+    .call(yAxis);
+
+	/*
+	//Ajout des rectangles
+  svg.append('g').selectAll("rect")
+    .data(data_connections)
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {
+      return xScale(d.value);
+    })
+    .attr("y", function(d, i) {
+      return yScale(d.key);
+    })
+    .attr("height", function(d) {
+      return yScale.bandwidth();
+    })
+    .attr("width", function(d, i) {
+      return width - w2 - xScale(d.value);
+    })
+    .attr("fill", color(1))
+    .attr('stroke', 'none')
+	*/
+	//Ajout des cercles
+	svg.append('g').selectAll("circle")
+    .data(data_connections)
+	.enter()
+    .append("circle")
+    .attr("cx", function(d) { return xScale(d.value); })
+    .attr("cy", function(d) { return yScale(d.key) + yScale.bandwidth()/2 ; })
+    .attr("r", 2.5)
+	
+	//Ajout d'une ligne
+	var line = d3.line()
+	//.defined(d => !isNaN(d.value))
+	.x(function(d) {return xScale(d.value);})
+	.y(function(d) {return yScale(d.key) + yScale.bandwidth()/2;})
+	
+	console.log(data_connections)
+	svg.append('g').selectAll(".line")
+	.data(data_connections)
+	.enter()
+		.append("path")
+			.attr("class","line")
+			.attr("d",line)
+			.attr("stroke", "black")
+			.attr("stroke-width","2")
+			.attr("fill","none")
 }
 
 function plot_timeline_text(data_timeline,color,yScale,state_array) {
