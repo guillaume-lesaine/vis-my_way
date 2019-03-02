@@ -4,21 +4,21 @@
 
 Project [MyWay](https://guillaume-lesaine.github.io/vis-my_way/canva.html) wants to help you visualize your profesionnal career. We leverage D3.js to create a custom visual resume only based on the information stored on your LinkedIn profile page.
 
-# How to
+# Try it
 
 You can first take a look at the platform [MyWay](https://guillaume-lesaine.github.io/vis-my_way/canva.html) and will with the default resume.
 
-## Get your own data
+## 1. Get your LinkedIn archive
 
 In order to properly use the platform, you need to download your LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data into two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, load your directory data on the platform and you are all set!
 
-## Customize your resume
+## 2. Customize your resume
 
 Once your LinkedIn data is loaded, you can use our functionalities to customize your resume and highlight your experiences. We provide two main customization features : modulate the details of your experiences and tag them with skills ! This can be done by clicking on the bars from the timeline and by using the drag and drop feature. Here is an exemple of that:
 
 GIFs of highlight features and drag and drop
 
-## Export your resume
+## 3. Export your resume
 
 Once that you are satisfied with the result, you can clik on the PDF button and get your PDF resume.
 
