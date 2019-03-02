@@ -1,8 +1,14 @@
-function plot_timeline(data_timeline) {
-  data_education = data_timeline[0]
-  data_positions = data_timeline[1]
-  data_projects = data_timeline[2]
-
+function plot_core(data_core) {
+  data_education = data_core[0]
+  data_positions = data_core[1]
+  data_projects = data_core[2]
+  //data_core[3] --> contacts
+	
+	//Echelle de couleur
+  var color = d3.scaleOrdinal(d3.schemePaired)
+	
+  //###___timeline___###
+  
   //Education: min 1 year
   data_education.forEach(function(d) {
     if (d['Start Date'] === d['End Date']) {
@@ -78,17 +84,46 @@ function plot_timeline(data_timeline) {
         d.end_date = d.end_date + parseDate_Y("1");
         //console.log(d.end_date);
       };
-    }
-    if (d.type === "positions") {
-      d.start_date = parseDate_MY(d['Started On']);
-      d.end_date = parseDate_MY(d['Finished On']);
-    }
-    if (d.type === "projects") {
-      d.start_date = parseDate_MY(d['Start Date']);
-      d.end_date = parseDate_MY(d['End Date']);
-    }
+    } else {
+		if (d['Start Date'] === undefined) {
+			d.start_date = parseDate_MY(d['Started On']);
+			d.end_date = parseDate_MY(d['Finished On']);
+		} else {
+			d.start_date = parseDate_MY(d['Start Date']);
+			d.end_date = parseDate_MY(d['End Date']);
+		}
+	}
 
   })
+  console.log(data_timeline)
+  plot_timeline(data_timeline,color);
+  
+  //###___contacts___###
+  
+  //Data preparations
+  var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
+  var formatMY = d3.timeFormat("%b %Y"); //format month year
+  
+  data_core[3].forEach(function(d, i) {
+    d['Connected On'] = parseDate(d['Connected On']);
+    d.month_year = formatMY(d['Connected On']);
+  })
+
+  //Transformation des données
+  var data_connections = d3.nest()
+    .key(function(d) {
+      return d.month_year
+    })
+    .rollup(function(v) {
+      return v.length;
+    })
+    .entries(data_core[3]);
+	
+  plot_connections(data_connections,data_timeline,color);
+  
+}
+
+function plot_timeline(data_timeline,color) {
 
   // Creation du svg graph
 
@@ -111,8 +146,6 @@ function plot_timeline(data_timeline) {
     .append('g')
 	.attr("transform", "translate(" + width*0.05 + ", 0)");
 
-  //Echelle de couleur
-  var color = d3.scaleOrdinal(d3.schemePaired)
 
   //echelle verticale y
   var yScale = d3.scaleTime()
@@ -226,8 +259,106 @@ function plot_timeline(data_timeline) {
   // console.log("0",v)
 }
 
+
+function plot_connections(data_connections,data_timeline,color) {
+	d3.select("#svg_connections").remove();
+	
+	var formatY = d3.timeFormat("%Y"); //Used to display only years in ticks
+	var parseDate_MY = d3.timeParse("%b %Y");
+	var formatMY = d3.timeFormat("%b %Y");
+
+  // Creation du svg
+  var width = document.getElementById("connections").offsetWidth // - margin.left - margin.right;
+  var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
+
+  // width = w1 + w2
+  // w1 : width chart
+  // w2 : width label zone
+  var w1 = width * 0.65
+  var w2 = width * 0.35
+
+  var svg = d3.select("#connections").append("svg")
+    .attr("viewBox", "0 0 " + width + " " + height)
+    .attr("perserveAspectRatio", "xMinYMid")
+    .attr("id", "svg_connections")
+    .append('g')
+	.attr('transform','translate(5,2)')
+
+  //Creation des echelles
+  
+  var domain_y = d3.timeMonth.range(d3.min(data_timeline, function(d) { 
+		return d.start_date
+    }),d3.max(data_timeline, function(d) {
+		return d.end_date
+    }))
+	
+  //echelle verticale y
+  var yScale = d3.scaleBand()
+	.domain(domain_y.map(function(d) {return formatMY(d)}))
+    .paddingInner(0.05)
+    .range([height,0]);
+
+  //echelle count x
+  var xScale = d3.scaleLinear()
+    .domain([0, d3.max(data_connections, function(d) {
+      return d.value;
+    })])
+    .rangeRound([width - w2, 0]);
+	
+  //selectionner uniquement les mois de janvier
+  var yAxisLabel = domain_y.map(function(d) {
+    return formatMY(d)
+  }).filter(
+    function(d) {
+      var words = d.split(' ');
+      if (words[0] === 'Jan') {
+        return d;
+      }
+    })
+
+  var yAxis = d3.axisRight()
+    .scale(yScale)
+    .tickValues(yAxisLabel)
+    .tickFormat(function(d) {
+      return formatY(parseDate_MY(d))
+    })
+
+
+  //Ajout de l'axe y
+  svg.append('g')
+    .attr('transform', 'translate(' + w1 + ',0)')
+    .attr('id', 'y_axis')
+    .call(yAxis);
+	
+	//Ajout d'une courbe
+	var line = d3.line()
+	.curve(d3.curveCardinal)
+	.x(function(d) {return xScale(d.value);})
+	.y(function(d) {return yScale(d.key) + yScale.bandwidth()/2;})
+	
+	svg.append('g').selectAll(".line")
+	.data([data_connections])
+	.enter()
+		.append("path")
+			.attr("class",function(d) {return line(d);})
+			.attr("d",line)
+			.attr("stroke", color(0))
+			.attr("stroke-width","2")
+			.attr("fill","none")
+	
+	//Ajout des cercles
+	svg.append('g').selectAll("circle")
+    .data(data_connections)
+	.enter()
+    .append("circle")
+    .attr("cx", function(d) { return xScale(d.value); })
+    .attr("cy", function(d) { return yScale(d.key) + yScale.bandwidth()/2 ; })
+    .attr("r", 2.5)
+}
+
 function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
 	d3.select("#timeline_text").selectAll("div").remove();
+	var formatMY = d3.timeFormat("%b %Y");
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
     .data(data_timeline)
@@ -270,13 +401,13 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
     })
     .html(function(d) {
       if (d.type === "education") {
-        return d['Notes'];
+		  return formatMY(d.start_date) + " - " + formatMY(d.end_date) + "<br>" + d['Notes'];
       }
       if (d.type === "positions") {
-        return d['Description']
+		  return formatMY(d.start_date) + " - " + formatMY(d.end_date) + "<br>" + d['Description'];
       }
       if (d.type === "projects") {
-        return d['Description']
+		  return formatMY(d.start_date) + " - " + formatMY(d.end_date) + "<br>" + d['Description'];
       }
     });
 
