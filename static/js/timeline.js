@@ -96,6 +96,7 @@ function plot_timeline(data_timeline) {
 
   var width = document.getElementById("timeline_graph").offsetWidth // - margin.left - margin.right;
   var height = document.getElementById("timeline_graph").offsetHeight // - margin.top - margin.bottom;
+  console.log("height",height)
 
   // width = w1 + w2
   // w1 : width timeline graph
@@ -137,12 +138,13 @@ function plot_timeline(data_timeline) {
 	data_timeline.forEach(function(d) {
 		state_array.push("1");
 	})
-	
+
   //rect
   svg.append('g').selectAll(".rect_timeline")
     .data(data_timeline)
     .enter()
     .append("rect")
+    .attr("id",(d, i) => "rect_timeline_" + i )
     .attr("x", function(d) {
       return xScale(d.type)
     })
@@ -197,19 +199,34 @@ function plot_timeline(data_timeline) {
 	.on('click', function(d,i) {
 		state_array[i] = String((Number(state_array[i])+1)%4);
 		//console.log(state_array);
-		plot_timeline_text(data_timeline,color,yScale,state_array);
+		plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
 	})
-	
+
 	d3.select("#timeline_text")
 	.on('drop', function() {
-		plot_timeline_text(data_timeline,color,yScale,state_array);
-	
+		plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
 	})
-	//d3.select(".text_box").remove();
-	plot_timeline_text(data_timeline,color,yScale,state_array);
+
+  document.getElementById("skills")
+  .addEventListener('drop', function() {
+    doit = setTimeout(function() {
+      plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+    }, 10);
+  })
+
+
+  window.addEventListener("resize", function() {
+    plot_timeline_text_resize(data_timeline)
+  });
+
+	plot_timeline_text_load(data_timeline,color,yScale,state_array);
+
+  // x = document.getElementById("timeline_graph")
+  // v = x.style.top
+  // console.log("0",v)
 }
 
-function plot_timeline_text(data_timeline,color,yScale,state_array) {
+function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
 	d3.select("#timeline_text").selectAll("div").remove();
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
@@ -268,9 +285,8 @@ function plot_timeline_text(data_timeline,color,yScale,state_array) {
     .attr("id", function(d, i) {
       return "skills_box_" + i
     })
-    .style("min-height", "3vw")
-	.style("width", "98%");
-	
+    .style("width", "98%");
+
 	//hidden according to the state
 	state_array.forEach(function(d,i) {
 	//state = 0 nothing
@@ -303,7 +319,61 @@ function plot_timeline_text(data_timeline,color,yScale,state_array) {
 		d3.select('#skills_box_' + i).classed('hidden',false);
 	}
 	})
-	
+
+  // Awesome icons management
+  // Delete former icons
+  d3.select("#connections_icons").selectAll("i").remove();
+  d3.select("#timeline_icons").selectAll("i").remove();
+
+  // Get the dv containing the icons
+  var connections_icons = document.getElementById('connections_icons');
+  var timeline_icons = document.getElementById('timeline_icons');
+
+  // Now create and append to icons
+  var connections = document.createElement('i');
+  var education = document.createElement('i');
+  var positions = document.createElement('i');
+  var projects = document.createElement('i');
+
+  // Create the icons
+  connections.className = "fa fa-linkedin";
+  connections.style.fontSize = "1.5vw";
+  connections.style.display = "inline-block;";
+
+  education.className = "fa fa-graduation-cap";
+  education.style.fontSize = "1.6vw";
+  // education.style.paddingLeft = "0.2vw";
+  education.style.paddingRight = "0.2vw";
+  positions.className = "fa fa-briefcase";
+  positions.style.fontSize = "1.6vw";
+  positions.style.paddingRight = "0.40vw";
+  // positions.style.paddingRight = "0.2vw";
+  projects.className = "fa fa-flag";
+  projects.style.fontSize = "1.6vw";
+  projects.style.paddingRight = "0.25vw";
+  // projects.style.paddingLeft = "0.2vw";
+  // projects.style.paddingRight = "0.2vw";
+
+  connections_icons.appendChild(connections);
+  timeline_icons.appendChild(education);
+  timeline_icons.appendChild(positions);
+  timeline_icons.appendChild(projects);
+
+    // tooltip.classed('hidden', false)
+    //   .attr('style', 'left:' + (mouse[0] + 20) +
+    //       'px; top:' + (mouse[1] - 80 - height) + 'px')
+    //   .html(function() {
+    //     if (d.type === "education") {
+    //     return d['School Name'];
+    //     }
+    //     if (d.type === "positions") {
+    //     return d['Company Name'] + " - " + d['Title'];
+    //     }
+    //     if (d.type === "projects") {
+    //     return d['Title']
+    //     }
+    //   });
+
 
 	//management of the layout 100% or 50%
 	for (i = 1; i < data_timeline.length; i++) { //i=1,2,3,4,5,6,7
@@ -343,6 +413,97 @@ function plot_timeline_text(data_timeline,color,yScale,state_array) {
 				"top:" + yScale(data_timeline[i].end_date) +"px"
 				);
 		}
-		
 	}
+  //drag_and_drop(true)
+}
+
+function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
+	//hidden according to the state
+	state_array.forEach(function(d,i) {
+	//state = 0 nothing
+	if (state_array[i]==='0') {
+		d3.select('#text_box_' + i).classed('hidden',true);
+		d3.select('#title_' + i).classed('hidden',true);
+		d3.select('#subtitle_' + i).classed('hidden',true);
+		d3.select('#skills_box_' + i).classed('hidden',true);
+	}
+	//state = 1 --> text_box + title
+	else if (state_array[i]==='1') {
+		d3.select('#text_box_' + i).classed('hidden',false);
+		d3.select('#title_' + i).classed('hidden',false);
+		d3.select('#subtitle_' + i).classed('hidden',true);
+		d3.select('#skills_box_' + i).classed('hidden',true);
+	}
+	//state = 2 --> text_box + title + subtitle
+	else if (state_array[i]==='2') {
+		//d3.select('#text_box_' + i).classed('hidden',false);
+		//d3.select('#title_' + i).classed('hidden',false);
+		d3.select('#subtitle_' + i).classed('hidden',false);
+		//d3.select('#skills_box_' + i).classed('hidden',true);
+
+	}
+	//state = 3 --> text_box + title + subtitle + skills_box
+	else if (state_array[i]==='3') {
+		d3.select('#text_box_' + i).classed('hidden',false);
+		d3.select('#title_' + i).classed('hidden',false);
+		d3.select('#subtitle_' + i).classed('hidden',false);
+		d3.select('#skills_box_' + i).classed('hidden',false);
+	}
+	})
+
+
+	//management of the layout 100% or 50%
+	for (i = 1; i < data_timeline.length; i++) { //i=1,2,3,4,5,6,7
+		if (yScale(data_timeline[i].end_date) < yScale(data_timeline[i-1].end_date) + d3.select('#text_box_' + String(Number(i) - 1)).node().getBoundingClientRect().height) {
+			//console.log(i-1 + " deborde sur " + i);
+			//console.log(yScale(data_timeline[i-1].end_date));
+			//console.log(d3.select('#text_box_' + String(Number(i) - 1)).node().getBoundingClientRect().height);
+			//console.log(" ");
+			//texte_box i-1 --> 50% left
+			d3.select("#text_box_"+ String(i-1))
+				.attr("style",
+				"border-top: 5px solid " + color(i-1) + ";" +
+				"position: absolute;" +
+				"width: 50%;" +
+				//"left: 50%;" +
+				"top:" + yScale(data_timeline[i-1].end_date) +"px"
+				);
+			//texte_box i --> 50% right
+			d3.select("#text_box_"+i)
+				.attr("style",
+				"border-top: 5px solid " + color(i) + ";" +
+				"position: absolute;" +
+				"width: 50%;" +
+				"left: 50%;" +
+				"top:" + yScale(data_timeline[i].end_date) +"px"
+				);
+		}
+		else {
+			//console.log(i-1 + " ne deborde pas sur " + i)
+			//console.log(" ");
+			d3.select("#text_box_"+i)
+				.attr("style",
+				"border-top: 5px solid " + color(i) + ";" +
+				"position: absolute;" +
+				"width: 100%;" +
+				//"left: 50%;" +
+				"top:" + yScale(data_timeline[i].end_date) +"px"
+				);
+		}
+	}
+}
+
+function plot_timeline_text_resize(data_timeline) {
+  var height = document.getElementById("timeline_graph").offsetHeight
+  var yScale = d3.scaleTime()
+    .domain([d3.min(data_timeline, function(d) {
+      return d.start_date
+    }), d3.max(data_timeline, function(d) {
+      return d.end_date
+    })])
+    .range([height, 0]);
+  data_timeline.forEach(function(d,i) {
+    x = document.getElementById("text_box_"+i)
+    x.style.top = yScale(d.end_date)
+  })
 }
