@@ -84,17 +84,18 @@ function plot_core(data_core) {
         d.end_date = d.end_date + parseDate_Y("1");
         //console.log(d.end_date);
       };
-    }
-    if (d.type === "positions") {
-      d.start_date = parseDate_MY(d['Started On']);
-      d.end_date = parseDate_MY(d['Finished On']);
-    }
-    if (d.type === "projects") {
-      d.start_date = parseDate_MY(d['Start Date']);
-      d.end_date = parseDate_MY(d['End Date']);
-    }
+    } else {
+		if (d['Start Date'] === undefined) {
+			d.start_date = parseDate_MY(d['Started On']);
+			d.end_date = parseDate_MY(d['Finished On']);
+		} else {
+			d.start_date = parseDate_MY(d['Start Date']);
+			d.end_date = parseDate_MY(d['End Date']);
+		}
+	}
 
   })
+  console.log(data_timeline)
   plot_timeline(data_timeline,color);
   
   //###___contacts___###
@@ -255,14 +256,15 @@ function plot_connections(data_connections,data_timeline,color) {
   // width = w1 + w2
   // w1 : width chart
   // w2 : width label zone
-  var w1 = width * 0.7
-  var w2 = width * 0.3
+  var w1 = width * 0.65
+  var w2 = width * 0.35
 
   var svg = d3.select("#connections").append("svg")
     .attr("viewBox", "0 0 " + width + " " + height)
     .attr("perserveAspectRatio", "xMinYMid")
     .attr("id", "svg_connections")
     .append('g')
+	.attr('transform','translate(5,2)')
 
   //Creation des echelles
   
@@ -307,30 +309,25 @@ function plot_connections(data_connections,data_timeline,color) {
   //Ajout de l'axe y
   svg.append('g')
     .attr('transform', 'translate(' + w1 + ',0)')
-    .attr('class', 'y axis')
+    .attr('id', 'y_axis')
     .call(yAxis);
-
-	/*
-	//Ajout des rectangles
-  svg.append('g').selectAll("rect")
-    .data(data_connections)
-    .enter()
-    .append("rect")
-    .attr("x", function(d, i) {
-      return xScale(d.value);
-    })
-    .attr("y", function(d, i) {
-      return yScale(d.key);
-    })
-    .attr("height", function(d) {
-      return yScale.bandwidth();
-    })
-    .attr("width", function(d, i) {
-      return width - w2 - xScale(d.value);
-    })
-    .attr("fill", color(1))
-    .attr('stroke', 'none')
-	*/
+	
+	//Ajout d'une courbe
+	var line = d3.line()
+	.curve(d3.curveCardinal)
+	.x(function(d) {return xScale(d.value);})
+	.y(function(d) {return yScale(d.key) + yScale.bandwidth()/2;})
+	
+	svg.append('g').selectAll(".line")
+	.data([data_connections])
+	.enter()
+		.append("path")
+			.attr("class",function(d) {return line(d);})
+			.attr("d",line)
+			.attr("stroke", color(0))
+			.attr("stroke-width","2")
+			.attr("fill","none")
+	
 	//Ajout des cercles
 	svg.append('g').selectAll("circle")
     .data(data_connections)
@@ -339,27 +336,11 @@ function plot_connections(data_connections,data_timeline,color) {
     .attr("cx", function(d) { return xScale(d.value); })
     .attr("cy", function(d) { return yScale(d.key) + yScale.bandwidth()/2 ; })
     .attr("r", 2.5)
-	
-	//Ajout d'une ligne
-	var line = d3.line()
-	//.defined(d => !isNaN(d.value))
-	.x(function(d) {return xScale(d.value);})
-	.y(function(d) {return yScale(d.key) + yScale.bandwidth()/2;})
-	
-	console.log(data_connections)
-	svg.append('g').selectAll(".line")
-	.data(data_connections)
-	.enter()
-		.append("path")
-			.attr("class","line")
-			.attr("d",line)
-			.attr("stroke", "black")
-			.attr("stroke-width","2")
-			.attr("fill","none")
 }
 
 function plot_timeline_text(data_timeline,color,yScale,state_array) {
 	d3.select("#timeline_text").selectAll("div").remove();
+	var formatMY = d3.timeFormat("%b %Y");
   //text
   var text_box = d3.select("#timeline_text").selectAll("div")
     .data(data_timeline)
@@ -402,13 +383,13 @@ function plot_timeline_text(data_timeline,color,yScale,state_array) {
     })
     .html(function(d) {
       if (d.type === "education") {
-        return d['Notes'];
+		  return formatMY(d.start_date) + " - " + formatMY(d.end_date) + "<br>" + d['Notes'];
       }
       if (d.type === "positions") {
-        return d['Description']
+		  return formatMY(d.start_date) + " - " + formatMY(d.end_date) + "<br>" + d['Description'];
       }
       if (d.type === "projects") {
-        return d['Description']
+		  return formatMY(d.start_date) + " - " + formatMY(d.end_date) + "<br>" + d['Description'];
       }
     });
 

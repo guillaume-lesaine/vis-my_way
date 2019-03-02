@@ -222,3 +222,7 @@ div.tooltip {
 div.hidden {
 	display: none;
 }
+
+#y_axis {
+	font-size: 100%;
+}
