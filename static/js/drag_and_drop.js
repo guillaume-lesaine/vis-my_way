@@ -1,6 +1,6 @@
 // Credit : https://openclassrooms.com/fr/courses/1916641-dynamisez-vos-sites-web-avec-javascript/1922434-le-drag-drop
 
-function drag_and_drop(x) { // x is an empty array from the method_store array in data_loader.js
+function drag_and_drop(apply_skills_boxes) { // x is an empty array from the method_store array in data_loader.js
   var dndHandler = {
     draggedElement: null, // Propriété pointant vers l'élément en cours de déplacement
 
@@ -32,8 +32,8 @@ function drag_and_drop(x) { // x is an empty array from the method_store array i
 
         target.className = 'dropper'; // Application du design par défaut
         clonedElement = target.appendChild(clonedElement); // Ajout de l'élément cloné à la zone de drop actuelle
-        dndHandler.applyDragEvents(clonedElement); // Nouvelle application des événements qui ont été perdus lors du cloneNode()
         draggedElement.parentNode.removeChild(draggedElement); // Suppression de l'élément d'origine
+        dndHandler.applyDragEvents(clonedElement); // Nouvelle application des événements qui ont été perdus lors du cloneNode()
       });
     }
   };
@@ -46,6 +46,11 @@ function drag_and_drop(x) { // x is an empty array from the method_store array i
   var droppers = document.querySelectorAll('.dropper'),
     droppersLen = droppers.length;
   for (var i = 0; i < droppersLen; i++) {
+    //console.log(apply_skills_boxes)
+    //if (droppers[i].getAttribute("id").includes("skills_box_") !== apply_skills_boxes){ // If the attribute is a skills_box_ from the timeline
+      //console.log(i,droppers[i].getAttribute("id"))//
+    //} else {
     dndHandler.applyDropEvents(droppers[i]); // Application des événements nécessaires aux zones de drop
+  //}
   }
 }

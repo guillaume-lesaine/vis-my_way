@@ -44,7 +44,7 @@ method_store = [{
   "files": ["Education.csv", "Positions.csv", "Projects.csv", "Connections.csv"]
 }, {
   "method": drag_and_drop, //The drag and drop activation is conducted once everything else has been generated
-  "files": []
+  "files": [] // Do not apply the drag and drop activation to the text boxes
 }]
 
 // We store in a list the files that need additional processing using custom regex
