@@ -3,8 +3,7 @@ var canvg = require("canvg");
 var jsPDF = require("jspdf");
 
 $("#export_resume_button").click(function() {
-
-  // Activate a canvas for contacts
+  // Activate a canvas for contacts chart
   var chart_connections_div = document.getElementById("connections")
   var chart_connections_svg = document.getElementById("svg_connections")
   var chart_connections_canvas = document.getElementById("canvas_connections")
@@ -16,8 +15,7 @@ $("#export_resume_button").click(function() {
   chart_connections_canvas.setAttribute("width", chart_connections_style.width)
   chart_connections_canvas.setAttribute("height", chart_connections_style.height)
   chart_connections_div.setAttribute("hidden", "hidden")
-  var chart_connections_string = canvg(document.getElementById('canvas_connections'), chart_connections_svg.outerHTML)
-  console.log(chart_connections_style)
+  canvg(document.getElementById('canvas_connections'), chart_connections_svg.outerHTML)
 
   // Activate a canvas for timeline graph
   var chart_timeline_graph_div = document.getElementById("timeline_graph")
@@ -31,7 +29,7 @@ $("#export_resume_button").click(function() {
   chart_timeline_graph_canvas.setAttribute("width", chart_timeline_graph_style.width)
   chart_timeline_graph_canvas.setAttribute("height", chart_timeline_graph_style.height)
   chart_timeline_graph_div.setAttribute("hidden", "hidden")
-  var chart_timeline_graph_string = canvg(document.getElementById('canvas_timeline_graph'), chart_timeline_graph_svg.outerHTML)
+  canvg(document.getElementById('canvas_timeline_graph'), chart_timeline_graph_svg.outerHTML)
 
   // Turn the #export div to a canvas
   html2canvas(document.getElementById("export")).then(function(canvas) {
