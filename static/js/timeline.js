@@ -1,11 +1,8 @@
 function plot_core(data_core) {
-  data_education = data_core[0]
-  data_positions = data_core[1]
-  data_projects = data_core[2]
+  data_education = data_core[0];
+  data_positions = data_core[1];
+  data_projects = data_core[2];
   //data_core[3] --> contacts
-	
-	//Echelle de couleur
-  var color = d3.scaleOrdinal(d3.schemePaired)
 	
   //###___timeline___###
   
@@ -23,15 +20,15 @@ function plot_core(data_core) {
 
   //creation data_timeline
   var data_timeline = [];
-  data_education.forEach(function(d) {
+  data_education.forEach(function(d,i) {
     d.type = "education";
     data_timeline.push(d);
   })
-  data_positions.forEach(function(d) {
+  data_positions.forEach(function(d,i) {
     d.type = "positions";
     data_timeline.push(d)
   })
-  data_projects.forEach(function(d) {
+  data_projects.forEach(function(d,i) {
     d.type = "projects";
     data_timeline.push(d)
   })
@@ -61,6 +58,25 @@ function plot_core(data_core) {
     return b.end_date - a.end_date;
   }
   data_timeline = data_timeline.sort(sortByDateAscending)
+  
+  //add order
+  var order_education=0;
+  var order_positions=0;
+  var order_projects=0;
+  data_timeline.forEach(function(d,i) {
+	  if (d.type==="education") {
+		  d.order=order_education;
+		  order_education = order_education + 1;
+	  }
+	  if (d.type==="positions") {
+		  d.order=order_positions;
+		  order_positions = order_positions + 1;
+	  }
+	  if (d.type==="projects") {
+		  d.order=order_projects;
+		  order_projects = order_projects + 1;
+	  }
+  })
 
   //mise en forme du texte
   data_timeline.forEach(function(d) {
@@ -95,10 +111,30 @@ function plot_core(data_core) {
 	}
 
   })
-  console.log(data_timeline)
-  plot_timeline(data_timeline,color);
+	//color timeline
+	//https://coolors.co/780116-b10f2e-fe9b1e-8ea604-fdffff
+	var color_timeline = [d3.scaleLinear().domain([0,data_education.length]).range(["#b10f2e","white"]), //red
+	d3.scaleLinear().domain([0,data_positions.length]).range(["#fe9b1e","white"]), //orange
+	d3.scaleLinear().domain([0,data_projects.length]).range(["#8ea604","white"])]; //green
+	
+	data_timeline.forEach(function(d, i) {
+		if (d.type === "education") {
+			d.color = color_timeline[0](d.order)
+		}
+		if (d.type === "positions") {
+			d.color = color_timeline[1](d.order)
+		}
+		if (d.type === "projects") {
+			d.color = color_timeline[2](d.order)
+		}
+	})
+	console.log(data_timeline)
+	
+	plot_timeline(data_timeline);
   
   //###___contacts___###
+  
+  var color = "#d1d1d1"
   
   //Data preparations
   var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
@@ -123,7 +159,7 @@ function plot_core(data_core) {
   
 }
 
-function plot_timeline(data_timeline,color) {
+function plot_timeline(data_timeline) {
 
   // Creation du svg graph
 
@@ -131,7 +167,6 @@ function plot_timeline(data_timeline,color) {
 
   var width = document.getElementById("timeline_graph").offsetWidth // - margin.left - margin.right;
   var height = document.getElementById("timeline_graph").offsetHeight // - margin.top - margin.bottom;
-  console.log("height",height)
 
   // width = w1 + w2
   // w1 : width timeline graph
@@ -163,8 +198,11 @@ function plot_timeline(data_timeline,color) {
     .paddingInner(0.3);
 
   //tooltip
-  var tooltip = d3.select("#timeline_graph").append('div')
-	.attr('class', 'hidden tooltip'); // hidden & tooltip
+  var tooltip = d3.select("#timeline").append('div')
+	.attr('class', 'hidden tooltip') // hidden & tooltip
+	.attr("id","tooltip")
+	.attr("height",height); 
+	console.log(tooltip.attr("height"))
 
 	//state array
 	var state_array = []; //array of the state of each text_box (0,1,2,3)
@@ -191,17 +229,21 @@ function plot_timeline(data_timeline,color) {
       return xScale.bandwidth();
     })
     .attr("fill", function(d, i) {
-      return color(i);
+		return d.color
     })
-    //.attr('stroke', "black")
+    .attr('stroke', "white")
 	.attr("class","rect_timeline")
 	.on('mousemove', function(d) {
-		var mouse = d3.mouse(svg.node()).map(function(d) {
+		//var mouse = d3.mouse(svg.node()).map(function(d) {
+		var mouse = d3.mouse(this).map(function(d) {
 		return parseInt(d);
 		});
+		console.log("x: " + mouse[0])
+		console.log("y: " + mouse[1])
+		console.log("")
 		tooltip.classed('hidden', false)
 			.attr('style', 'left:' + (mouse[0] + 20) +
-					'px; top:' + (mouse[1] - 80 - height) + 'px')
+					'px; top:' + (mouse[1] - height) + 'px')
 			.html(function() {
 			  if (d.type === "education") {
 				return d['School Name'];
@@ -232,18 +274,18 @@ function plot_timeline(data_timeline,color) {
 	.on('click', function(d,i) {
 		state_array[i] = String((Number(state_array[i])+1)%4);
 		//console.log(state_array);
-		plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+		plot_timeline_text_refresh(data_timeline,yScale,state_array);
 	})
 
 	d3.select("#timeline_text")
 	.on('drop', function() {
-		plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+		plot_timeline_text_refresh(data_timeline,yScale,state_array);
 	})
 
   document.getElementById("skills")
   .addEventListener('drop', function() {
     doit = setTimeout(function() {
-      plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+      plot_timeline_text_refresh(data_timeline,yScale,state_array);
     }, 10);
   })
 
@@ -252,7 +294,7 @@ function plot_timeline(data_timeline,color) {
     plot_timeline_text_resize(data_timeline)
   });
 
-	plot_timeline_text_load(data_timeline,color,yScale,state_array);
+	plot_timeline_text_load(data_timeline,yScale,state_array);
 
   // x = document.getElementById("timeline_graph")
   // v = x.style.top
@@ -342,7 +384,7 @@ function plot_connections(data_connections,data_timeline,color) {
 		.append("path")
 			.attr("class",function(d) {return line(d);})
 			.attr("d",line)
-			.attr("stroke", color(0))
+			.attr("stroke", color)
 			.attr("stroke-width","2")
 			.attr("fill","none")
 	
@@ -356,7 +398,7 @@ function plot_connections(data_connections,data_timeline,color) {
     .attr("r", 2.5)
 }
 
-function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
+function plot_timeline_text_load(data_timeline,yScale,state_array) {
 	d3.select("#timeline_text").selectAll("div").remove();
 	var formatMY = d3.timeFormat("%b %Y");
   //text
@@ -370,7 +412,7 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
 		return state_array[i];
 	})
 	.attr('style', function(d,i) {
-		return "border-top: 5px solid " + color(i) + ";" +
+		return "border-top: 5px solid " + d.color + ";" +
 		"position: absolute;" +
 		"width: 100%;" +
 		//"left: 0%;" +
@@ -516,7 +558,7 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
 			//texte_box i-1 --> 50% left
 			d3.select("#text_box_"+ String(i-1))
 				.attr("style",
-				"border-top: 5px solid " + color(i-1) + ";" +
+				"border-top: 5px solid " + data_timeline[i-1].color + ";" +
 				"position: absolute;" +
 				"width: 50%;" +
 				//"left: 50%;" +
@@ -525,7 +567,7 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
 			//texte_box i --> 50% right
 			d3.select("#text_box_"+i)
 				.attr("style",
-				"border-top: 5px solid " + color(i) + ";" +
+				"border-top: 5px solid " + data_timeline[i].color + ";" +
 				"position: absolute;" +
 				"width: 50%;" +
 				"left: 50%;" +
@@ -537,7 +579,7 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
 			//console.log(" ");
 			d3.select("#text_box_"+i)
 				.attr("style",
-				"border-top: 5px solid " + color(i) + ";" +
+				"border-top: 5px solid " + data_timeline[i].color + ";" +
 				"position: absolute;" +
 				"width: 100%;" +
 				//"left: 50%;" +
@@ -548,7 +590,7 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
   //drag_and_drop(true)
 }
 
-function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
+function plot_timeline_text_refresh(data_timeline,yScale,state_array) {
 	//hidden according to the state
 	state_array.forEach(function(d,i) {
 	//state = 0 nothing
@@ -593,7 +635,7 @@ function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
 			//texte_box i-1 --> 50% left
 			d3.select("#text_box_"+ String(i-1))
 				.attr("style",
-				"border-top: 5px solid " + color(i-1) + ";" +
+				"border-top: 5px solid " + data_timeline[i-1].color + ";" +
 				"position: absolute;" +
 				"width: 50%;" +
 				//"left: 50%;" +
@@ -602,7 +644,7 @@ function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
 			//texte_box i --> 50% right
 			d3.select("#text_box_"+i)
 				.attr("style",
-				"border-top: 5px solid " + color(i) + ";" +
+				"border-top: 5px solid " + data_timeline[i].color + ";" +
 				"position: absolute;" +
 				"width: 50%;" +
 				"left: 50%;" +
@@ -614,7 +656,7 @@ function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
 			//console.log(" ");
 			d3.select("#text_box_"+i)
 				.attr("style",
-				"border-top: 5px solid " + color(i) + ";" +
+				"border-top: 5px solid " + data_timeline[i].color + ";" +
 				"position: absolute;" +
 				"width: 100%;" +
 				//"left: 50%;" +
@@ -637,4 +679,7 @@ function plot_timeline_text_resize(data_timeline) {
     x = document.getElementById("text_box_"+i)
     x.style.top = yScale(d.end_date)
   })
+	tooltip = document.getElementById("tooltip")
+	tooltip.setAttribute("height", height)
+	console.log(height)
 }

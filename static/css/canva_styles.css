@@ -245,7 +245,8 @@ div.tooltip {
 	border-radius: 2px;
 	opacity: 0.9;
 	position: relative;
-	width: 300%;
+	float:left;
+	font-size: 1.2vw;
 }
 
 div.hidden {
