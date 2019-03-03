@@ -78,7 +78,7 @@ function read_initial() {
       $.ajax({
         type: "GET",
         async: false,
-        url: "./data/Data_example/" + keys_dict[i],
+        url: "./data/example/" + keys_dict[i],
         success: function(file_content) {
           data_store_onfileload[keys_dict[i]] = $.csv.toObjects(file_content)
           if (i === keys_dict.length-1) { // If all files have been imported
