@@ -244,8 +244,9 @@ div.tooltip {
 	text-shadow: #f5f5f5 0 1px 0;
 	border-radius: 2px;
 	opacity: 0.9;
-	position: relative;
-	width: 300%;
+	position: absolute;
+	float:left;
+	font-size: 1.2vw;
 }
 
 div.hidden {
@@ -253,5 +254,5 @@ div.hidden {
 }
 
 #y_axis {
-	font-size: 100%;
+	font-size: 1.2vw;
 }
