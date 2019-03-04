@@ -92,13 +92,14 @@ function read_initial() {
 
 // Function to load new data from the interface
 function read_onload(files) {
-  var existing_files = []; // Initialize the potential missing files with full data_store_onfileload
-  var c = 0;
+  var existing_mandatory_files = []; // Initialize the potential missing files with full data_store_onfileload
+  var existing_optional_files = [];
+  var mandatory_files = ["Profile.csv","Connections.csv","Education.csv","Positions.csv","Projects.csv"]
+  var optional_files = ["Languages.csv","Skills.csv","Test Scores.csv"]
   var f = 0;
   var keys_dict = Object.keys(data_store_onfileload)
   for (var i = 0; i < files.length; i++) {
     (function(file) {
-      console.log(file.name)
       var name = file.name;
       var reader = new FileReader(); // Use of the FileReader tool
       reader.onload = function(e) {
@@ -106,22 +107,32 @@ function read_onload(files) {
         if (keys_dict.indexOf(name) > -1) {
           // If parse the csv
           data_store_onfileload[name] = $.csv.toObjects(e.target.result);
-          c += 1
-          existing_files.push(name)
+          if (mandatory_files.indexOf(name) > -1) {
+            existing_mandatory_files.push(name)
+          } else if (optional_files.indexOf(name)>-1){
+            existing_optional_files.push(name)
+          }
         } else {
           // Ignore the file
         }
         f += 1
         console.log(f)
-        if (f === files.length) { //If all the files have been looked at
-          if (c === keys_dict.length) { //If all the necessary files have been loaded
+        if (f === files.length) { //If all the files have been looked atconsole.log("missing_mandatory_files",missing_mandatory_files)
+          console.log("existing_mandatory_files",existing_mandatory_files)
+          if (existing_mandatory_files.length === mandatory_files.length) { //If all the nmandatory files have been loaded
+            console.log("missing_mandatory_files",[])
+            var missing_optional_files = $(optional_files).not(existing_optional_files).get();
+            console.log("existing_optional_files",existing_optional_files)
+            console.log("missing_optional_files",missing_optional_files)
+            for (var x=0; x<missing_optional_files.length; x++){
+              data_store_onfileload[missing_optional_files[x]]=[]
+            }
             execute_methods(data_store_onfileload)
-            console.log(existing_files)
           } else {
-            var diff = $(keys_dict).not(existing_files).get();
-            console.log(diff)
+            var missing_mandatory_files = $(mandatory_files).not(existing_mandatory_files).get();
+            console.log("missing_mandatory_files",missing_mandatory_files)
             $('#load_fail_information').empty()
-            $('#load_fail_information').append("<b>"+diff.join(", ")+"</b");
+            $('#load_fail_information').append("<b>"+missing_mandatory_files.join(", ")+"</b");
             $('#loadErrorModal').modal("show")
           }
         }
