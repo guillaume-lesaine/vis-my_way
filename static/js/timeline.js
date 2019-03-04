@@ -232,18 +232,18 @@ function plot_timeline(data_timeline,color) {
 	.on('click', function(d,i) {
 		state_array[i] = String((Number(state_array[i])+1)%4);
 		//console.log(state_array);
-		plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+		plot_timeline_text_refresh(data_timeline,color,state_array);
 	})
 
 	d3.select("#timeline_text")
 	.on('drop', function() {
-		plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+		plot_timeline_text_refresh(data_timeline,color,state_array);
 	})
 
   document.getElementById("skills")
   .addEventListener('drop', function() {
     doit = setTimeout(function() {
-      plot_timeline_text_refresh(data_timeline,color,yScale,state_array);
+      plot_timeline_text_refresh(data_timeline,color,state_array);
     }, 10);
   })
 
@@ -553,7 +553,7 @@ function plot_timeline_text_load(data_timeline,color,yScale,state_array) {
   //drag_and_drop(true)
 }
 
-function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
+function plot_timeline_text_refresh(data_timeline,color,state_array) {
 	//hidden according to the state
 	state_array.forEach(function(d,i) {
 	//state = 0 nothing
@@ -587,6 +587,13 @@ function plot_timeline_text_refresh(data_timeline,color,yScale,state_array) {
 	}
 	})
 
+  var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
+
+  //echelle verticale y
+  var yScale = d3.scaleBand()
+  .domain(domain_y.map(function(d) {return formatMY(d)}))
+    .paddingInner(0.05)
+    .range([height,0]);
 
 	//management of the layout 100% or 50%
 	for (i = 1; i < data_timeline.length; i++) { //i=1,2,3,4,5,6,7
