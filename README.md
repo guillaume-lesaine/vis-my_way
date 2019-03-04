@@ -17,7 +17,7 @@ In order to properly use the platform, you need to download your LinkedIn [perso
 Once your LinkedIn data is loaded, you can use our functionalities to customize your resume and highlight your experiences. We provide two main customization features : modulate the details of your experiences and tag them with skills ! This can be done by clicking on the bars from the timeline and by using the drag and drop feature. Here is an exemple of that:
 
 <div>
-<img src="static/images/customization.gif" style="display: block; margin-left: auto; margin-right: auto; width:80%">
+<img src="static/images/customization.gif" style="width:100%">
 </div>
 
 ## 3. Export your resume
