@@ -10,7 +10,7 @@ You can first take a look at the platform [MyWay](https://guillaume-lesaine.gith
 
 ## 1. Get your LinkedIn archive
 
-In order to properly use the platform, you need to download your LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data into two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, load your directory data on the platform and you are all set!
+In order to properly use the platform, you need to download your LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data into two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, unzip and load your directory data on the platform and you are all set!
 
 ## 2. Customize your resume
 
@@ -18,7 +18,6 @@ Once your LinkedIn data is loaded, you can use our functionalities to customize 
 
 <div>
 <img src="static/images/customization.gif" style="display: block; margin-left: auto; margin-right: auto; width:80%">
-<h5 style="text-align:center">Resume highlights and skills attribution</h5>
 </div>
 
 ## 3. Export your resume
