@@ -55,16 +55,16 @@ function plot_core(data_core) {
   data_timeline.forEach(function(d) {
     if (d.type === "education") {
       if (d.start_date.getTime() === d.end_date.getTime()) {
-		d.end_date = d3.timeYear.offset(d.end_date, 1) 
+		d.end_date = d3.timeYear.offset(d.end_date, 1)
       };
     }
     if (d.type === "positions") {
       if (d.start_date.getTime() === d.end_date.getTime()) {
-		d.end_date = d3.timeMonth.offset(d.end_date, 1) 
+		d.end_date = d3.timeMonth.offset(d.end_date, 1)
       };
     }
   })
-  
+
 
   //sort
   function sortByDateAscending(a, b) {
@@ -72,7 +72,7 @@ function plot_core(data_core) {
     return b.end_date - a.end_date;
   }
   data_timeline = data_timeline.sort(sortByDateAscending)
-  
+
   //add order
   var order_education=0;
   var order_positions=0;
@@ -110,7 +110,7 @@ function plot_core(data_core) {
 	var color_timeline = [d3.scaleLinear().domain([0,data_education.length]).range(["#b10f2e","white"]), //red
 	d3.scaleLinear().domain([0,data_positions.length]).range(["#fe9b1e","white"]), //orange
 	d3.scaleLinear().domain([0,data_projects.length]).range(["#8ea604","white"])]; //green
-	
+
 	data_timeline.forEach(function(d, i) {
 		if (d.type === "education") {
 			d.color = color_timeline[0](d.order)
@@ -122,13 +122,13 @@ function plot_core(data_core) {
 			d.color = color_timeline[2](d.order)
 		}
 	})
-	
+
 	plot_timeline(data_timeline);
-  
+
   //###___contacts___###
-  
+
   var color = "#d1d1d1"
-  
+
   //Data preparations
   var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
   var formatMY = d3.timeFormat("%b %Y"); //format month year
@@ -618,10 +618,13 @@ function plot_timeline_text_refresh(data_timeline,state_array) {
   var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
 
   //echelle verticale y
-  var yScale = d3.scaleBand()
-  .domain(domain_y.map(function(d) {return formatMY(d)}))
-    .paddingInner(0.05)
-    .range([height,0]);
+	var yScale = d3.scaleTime()
+    .domain([d3.min(data_timeline, function(d) {
+      return d.start_date
+    }), d3.max(data_timeline, function(d) {
+      return d.end_date
+    })])
+    .range([height, 0]);
 
 	//management of the layout 100% or 50%
 	for (i = 1; i < data_timeline.length; i++) { //i=1,2,3,4,5,6,7
