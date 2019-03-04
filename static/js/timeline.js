@@ -1,3 +1,8 @@
+var mouse_js;
+onmousemove = function(e) {
+	mouse_js = [e.clientX,e.clientY]
+}
+
 function plot_core(data_core) {
   data_education = data_core[0];
   data_positions = data_core[1];
@@ -34,24 +39,33 @@ function plot_core(data_core) {
   })
 
   //Data Parsing
-  var parseDate_Y = d3.timeParse("%Y");
   var parseDate_MY = d3.timeParse("%b %Y");
 
   data_timeline.forEach(function(d) {
+	if (d['Start Date'] === undefined) {
+		d.start_date = parseDate_MY(d['Started On']);
+		d.end_date = parseDate_MY(d['Finished On']);
+	} else {
+		d.start_date = parseDate_MY(d['Start Date']);
+		d.end_date = parseDate_MY(d['End Date']);
+	}
+  })
+  //education 1 year min
+  //position 1 month min
+  data_timeline.forEach(function(d) {
     if (d.type === "education") {
-      d.start_date = parseDate_MY(d['Start Date']);
-      d.end_date = parseDate_MY(d['End Date']);
+      if (d.start_date.getTime() === d.end_date.getTime()) {
+		d.end_date = d3.timeYear.offset(d.end_date, 1) 
+      };
     }
     if (d.type === "positions") {
-      d.start_date = parseDate_MY(d['Started On']);
-      d.end_date = parseDate_MY(d['Finished On']);
+      if (d.start_date.getTime() === d.end_date.getTime()) {
+		d.end_date = d3.timeMonth.offset(d.end_date, 1) 
+      };
     }
-    if (d.type === "projects") {
-      d.start_date = parseDate_MY(d['Start Date']);
-      d.end_date = parseDate_MY(d['End Date']);
-    }
-
   })
+  
+
   //sort
   function sortByDateAscending(a, b) {
     // Dates will be cast to numbers automagically:
@@ -91,26 +105,6 @@ function plot_core(data_core) {
     }
   })
 
-  //Data Parsing
-  data_timeline.forEach(function(d) {
-    if (d.type === "education") {
-      d.start_date = parseDate_MY(d['Start Date']);
-      d.end_date = parseDate_MY(d['End Date']);
-      if (d.start_date.getTime() === d.end_date.getTime()) {
-        d.end_date = d.end_date + parseDate_Y("1");
-        //console.log(d.end_date);
-      };
-    } else {
-		if (d['Start Date'] === undefined) {
-			d.start_date = parseDate_MY(d['Started On']);
-			d.end_date = parseDate_MY(d['Finished On']);
-		} else {
-			d.start_date = parseDate_MY(d['Start Date']);
-			d.end_date = parseDate_MY(d['End Date']);
-		}
-	}
-
-  })
 	//color timeline
 	//https://coolors.co/780116-b10f2e-fe9b1e-8ea604-fdffff
 	var color_timeline = [d3.scaleLinear().domain([0,data_education.length]).range(["#b10f2e","white"]), //red
@@ -128,7 +122,6 @@ function plot_core(data_core) {
 			d.color = color_timeline[2](d.order)
 		}
 	})
-	console.log(data_timeline)
 	
 	plot_timeline(data_timeline);
   
@@ -198,11 +191,8 @@ function plot_timeline(data_timeline) {
     .paddingInner(0.3);
 
   //tooltip
-  var tooltip = d3.select("#timeline").append('div')
+  var tooltip = d3.select("body").append('div')
 	.attr('class', 'hidden tooltip') // hidden & tooltip
-	.attr("id","tooltip")
-	.attr("height",height); 
-	console.log(tooltip.attr("height"))
 
 	//state array
 	var state_array = []; //array of the state of each text_box (0,1,2,3)
@@ -235,15 +225,11 @@ function plot_timeline(data_timeline) {
 	.attr("class","rect_timeline")
 	.on('mousemove', function(d) {
 		//var mouse = d3.mouse(svg.node()).map(function(d) {
-		var mouse = d3.mouse(this).map(function(d) {
-		return parseInt(d);
-		});
-		console.log("x: " + mouse[0])
-		console.log("y: " + mouse[1])
-		console.log("")
+		//return parseInt(d);
+		//});
 		tooltip.classed('hidden', false)
-			.attr('style', 'left:' + (mouse[0] + 20) +
-					'px; top:' + (mouse[1] - height) + 'px')
+			.attr('style', 'left:' + (mouse_js[0] + 20) +
+					'px; top:' + (mouse_js[1] - 20 ) + 'px')
 			.html(function() {
 			  if (d.type === "education") {
 				return d['School Name'];
@@ -300,7 +286,6 @@ function plot_timeline(data_timeline) {
   // v = x.style.top
   // console.log("0",v)
 }
-
 
 function plot_connections(data_connections,data_timeline,color) {
 	d3.select("#svg_connections").remove();
@@ -679,7 +664,4 @@ function plot_timeline_text_resize(data_timeline) {
     x = document.getElementById("text_box_"+i)
     x.style.top = yScale(d.end_date)
   })
-	tooltip = document.getElementById("tooltip")
-	tooltip.setAttribute("height", height)
-	console.log(height)
 }
