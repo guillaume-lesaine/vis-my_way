@@ -14,7 +14,6 @@ data_store_onfileload = {
   "Connections.csv": [],
   "Education.csv": [],
   "Languages.csv": [],
-  "Phone Numbers.csv": [],
   "Positions.csv": [],
   "Profile.csv": [],
   "Projects.csv": [],
@@ -79,10 +78,10 @@ function read_initial() {
       $.ajax({
         type: "GET",
         async: false,
-        url: "./data/Data_example/" + keys_dict[i],
+        url: "./data/example/" + keys_dict[i],
         success: function(file_content) {
           data_store_onfileload[keys_dict[i]] = $.csv.toObjects(file_content)
-          if (i === 8) {
+          if (i === keys_dict.length-1) { // If all files have been imported
             execute_methods(data_store_onfileload)
           }
         }
@@ -93,23 +92,38 @@ function read_initial() {
 
 // Function to load new data from the interface
 function read_onload(files) {
-  var c = 0
+  var existing_files = []; // Initialize the potential missing files with full data_store_onfileload
+  var c = 0;
+  var f = 0;
+  var keys_dict = Object.keys(data_store_onfileload)
   for (var i = 0; i < files.length; i++) {
     (function(file) {
+      console.log(file.name)
       var name = file.name;
       var reader = new FileReader(); // Use of the FileReader tool
       reader.onload = function(e) {
         // Check if the name of the file is in the list of the files to process more
-        if (files_additional_treatment.indexOf(name) > -1) {
-          // If so provide custom regex treatment
-        } else {
-          // Otherwise parse csv to object using JQUERY csv parse
+        if (keys_dict.indexOf(name) > -1) {
+          // If parse the csv
           data_store_onfileload[name] = $.csv.toObjects(e.target.result);
           c += 1
-          //console.log(data_store[name][0]) //data_store[name].data = $.csv.toObjects(e.target.result)
+          existing_files.push(name)
+        } else {
+          // Ignore the file
         }
-        if (c === files.length) {
-          execute_methods(data_store_onfileload)
+        f += 1
+        console.log(f)
+        if (f === files.length) { //If all the files have been looked at
+          if (c === keys_dict.length) { //If all the necessary files have been loaded
+            execute_methods(data_store_onfileload)
+            console.log(existing_files)
+          } else {
+            var diff = $(keys_dict).not(existing_files).get();
+            console.log(diff)
+            $('#load_fail_information').empty()
+            $('#load_fail_information').append("<b>"+diff.join(", ")+"</b");
+            $('#loadErrorModal').modal("show")
+          }
         }
       }
       reader.readAsText(file, "UTF-8");

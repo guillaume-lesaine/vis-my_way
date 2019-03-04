@@ -8,9 +8,9 @@ function plot_core(data_core) {
   data_positions = data_core[1];
   data_projects = data_core[2];
   //data_core[3] --> contacts
-	
+
   //###___timeline___###
-  
+
   //Education: min 1 year
   data_education.forEach(function(d) {
     if (d['Start Date'] === d['End Date']) {
@@ -132,7 +132,7 @@ function plot_core(data_core) {
   //Data preparations
   var parseDate = d3.timeParse("%d %b %Y"); //inverse de timeFormat
   var formatMY = d3.timeFormat("%b %Y"); //format month year
-  
+
   data_core[3].forEach(function(d, i) {
     d['Connected On'] = parseDate(d['Connected On']);
     d.month_year = formatMY(d['Connected On']);
@@ -147,9 +147,9 @@ function plot_core(data_core) {
       return v.length;
     })
     .entries(data_core[3]);
-	
+
   plot_connections(data_connections,data_timeline,color);
-  
+
 }
 
 function plot_timeline(data_timeline) {
@@ -260,18 +260,19 @@ function plot_timeline(data_timeline) {
 	.on('click', function(d,i) {
 		state_array[i] = String((Number(state_array[i])+1)%4);
 		//console.log(state_array);
-		plot_timeline_text_refresh(data_timeline,yScale,state_array);
+
+		plot_timeline_text_refresh(data_timeline,state_array);
 	})
 
 	d3.select("#timeline_text")
 	.on('drop', function() {
-		plot_timeline_text_refresh(data_timeline,yScale,state_array);
+		plot_timeline_text_refresh(data_timeline,state_array);
 	})
 
   document.getElementById("skills")
   .addEventListener('drop', function() {
     doit = setTimeout(function() {
-      plot_timeline_text_refresh(data_timeline,yScale,state_array);
+      plot_timeline_text_refresh(data_timeline,state_array);
     }, 10);
   })
 
@@ -289,7 +290,7 @@ function plot_timeline(data_timeline) {
 
 function plot_connections(data_connections,data_timeline,color) {
 	d3.select("#svg_connections").remove();
-	
+
 	var formatY = d3.timeFormat("%Y"); //Used to display only years in ticks
 	var parseDate_MY = d3.timeParse("%b %Y");
 	var formatMY = d3.timeFormat("%b %Y");
@@ -312,13 +313,13 @@ function plot_connections(data_connections,data_timeline,color) {
 	.attr('transform','translate(5,2)')
 
   //Creation des echelles
-  
-  var domain_y = d3.timeMonth.range(d3.min(data_timeline, function(d) { 
+
+  var domain_y = d3.timeMonth.range(d3.min(data_timeline, function(d) {
 		return d.start_date
     }),d3.max(data_timeline, function(d) {
 		return d.end_date
     }))
-	
+
   //echelle verticale y
   var yScale = d3.scaleBand()
 	.domain(domain_y.map(function(d) {return formatMY(d)}))
@@ -331,7 +332,7 @@ function plot_connections(data_connections,data_timeline,color) {
       return d.value;
     })])
     .rangeRound([width - w2, 0]);
-	
+
   //selectionner uniquement les mois de janvier
   var yAxisLabel = domain_y.map(function(d) {
     return formatMY(d)
@@ -349,20 +350,25 @@ function plot_connections(data_connections,data_timeline,color) {
     .tickFormat(function(d) {
       return formatY(parseDate_MY(d))
     })
+    .tickSizeInner(width/20)
+    .tickSizeOuter(width/20)
 
 
   //Ajout de l'axe y
   svg.append('g')
     .attr('transform', 'translate(' + w1 + ',0)')
     .attr('id', 'y_axis')
+    .style('color', 'black')
+    .style("font-size",width/12)
+    .attr("stroke-width",width/100)
     .call(yAxis);
-	
+
 	//Ajout d'une courbe
 	var line = d3.line()
 	.curve(d3.curveCardinal)
 	.x(function(d) {return xScale(d.value);})
 	.y(function(d) {return yScale(d.key) + yScale.bandwidth()/2;})
-	
+
 	svg.append('g').selectAll(".line")
 	.data([data_connections])
 	.enter()
@@ -370,9 +376,9 @@ function plot_connections(data_connections,data_timeline,color) {
 			.attr("class",function(d) {return line(d);})
 			.attr("d",line)
 			.attr("stroke", color)
-			.attr("stroke-width","2")
+			.attr("stroke-width",width/50)
 			.attr("fill","none")
-	
+
 	//Ajout des cercles
 	svg.append('g').selectAll("circle")
     .data(data_connections)
@@ -380,7 +386,7 @@ function plot_connections(data_connections,data_timeline,color) {
     .append("circle")
     .attr("cx", function(d) { return xScale(d.value); })
     .attr("cy", function(d) { return yScale(d.key) + yScale.bandwidth()/2 ; })
-    .attr("r", 2.5)
+    .attr("r", width/70)
 }
 
 function plot_timeline_text_load(data_timeline,yScale,state_array) {
@@ -575,7 +581,7 @@ function plot_timeline_text_load(data_timeline,yScale,state_array) {
   //drag_and_drop(true)
 }
 
-function plot_timeline_text_refresh(data_timeline,yScale,state_array) {
+function plot_timeline_text_refresh(data_timeline,state_array) {
 	//hidden according to the state
 	state_array.forEach(function(d,i) {
 	//state = 0 nothing
@@ -609,6 +615,13 @@ function plot_timeline_text_refresh(data_timeline,yScale,state_array) {
 	}
 	})
 
+  var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
+
+  //echelle verticale y
+  var yScale = d3.scaleBand()
+  .domain(domain_y.map(function(d) {return formatMY(d)}))
+    .paddingInner(0.05)
+    .range([height,0]);
 
 	//management of the layout 100% or 50%
 	for (i = 1; i < data_timeline.length; i++) { //i=1,2,3,4,5,6,7
