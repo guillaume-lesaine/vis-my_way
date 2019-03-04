@@ -1,3 +1,7 @@
+$(window).on('load',function(){
+    $('#myModal').modal('show');
+});
+
 // Initialization of the buttons, the input (real_file_button) and the displayed (load_data_button)
 const real_file_button = document.getElementById("real_file_button")
 const load_data_button = document.getElementById("load_data_button")
@@ -116,7 +120,6 @@ function read_onload(files) {
           // Ignore the file
         }
         f += 1
-        console.log(f)
         if (f === files.length) { //If all the files have been looked atconsole.log("missing_mandatory_files",missing_mandatory_files)
           console.log("existing_mandatory_files",existing_mandatory_files)
           if (existing_mandatory_files.length === mandatory_files.length) { //If all the nmandatory files have been loaded
