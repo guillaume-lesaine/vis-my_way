@@ -98,8 +98,8 @@ function read_initial() {
 function read_onload(files) {
   var existing_mandatory_files = []; // Initialize the potential missing files with full data_store_onfileload
   var existing_optional_files = [];
-  var mandatory_files = ["Profile.csv","Connections.csv","Education.csv","Positions.csv","Projects.csv"]
-  var optional_files = ["Languages.csv","Skills.csv","Test Scores.csv"]
+  var mandatory_files = ["Profile.csv","Connections.csv","Education.csv","Positions.csv"]
+  var optional_files = ["Languages.csv","Skills.csv","Test Scores.csv","Projects.csv"]
   var f = 0;
   var keys_dict = Object.keys(data_store_onfileload)
   for (var i = 0; i < files.length; i++) {
