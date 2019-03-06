@@ -8,9 +8,15 @@ Project [MyWay](https://guillaume-lesaine.github.io/vis-my_way/canva.html) wants
 
 You can first take a look at the platform [MyWay](https://guillaume-lesaine.github.io/vis-my_way/canva.html) and play with the default resume.
 
-## 1. Get your LinkedIn archive
+## 1. Load your LinkedIn archive
 
-In order to properly use the platform, you need to download your LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data under two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, unzip and load your directory data on the platform and you are all set!
+In order to properly use the platform, you need to download your full LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data under two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, unzip and load your directory data on the platform and you are all set!
+
+<div>
+<img src="static/images/export_archive.gif" style="width:30%;display: inline-block">
+<img src="static/images/load_data.gif" style="width:69%;display: inline-block">
+</div>
+
 
 ## 2. Customize your resume
 
