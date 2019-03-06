@@ -10,25 +10,25 @@ You can first take a look at the platform [MyWay](https://guillaume-lesaine.gith
 
 ## 1. Load your LinkedIn archive
 
-In order to properly use the platform, you need to download your full LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data under two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, unzip and load your directory data on the platform and you are all set!
+In order to properly use the platform, you need to download your **full** LinkedIn [personal archive](https://www.linkedin.com/psettings/member-data) enabled thanks to European Union GDPR. LinkedIn should send you to data under two versions, a light one after a few minutes and a complete one after 24h. The light data extraction is sufficient to use the platform. Once downloaded, **unzip** and **load** your directory data on the platform and you are all set!
 
 <div>
-<img src="static/images/export_archive.gif" style="width:30%;display: inline-block">
-<img src="static/images/load_data.gif" style="width:69%;display: inline-block">
+<img src="static/images/export_archive.gif" width="30%">
+<img src="static/images/load_data.gif" width="69%">
 </div>
 
 
 ## 2. Customize your resume
 
-Once your LinkedIn data is loaded, you can use our functionalities to customize your resume and highlight your experiences. We provide two main customization features : modulate the details of your experiences and tag them with skills ! This can be done by clicking on the bars from the timeline and by using the drag and drop feature. Here is an exemple of that:
+Once your LinkedIn data is loaded, you can use our functionalities to customize your resume and highlight your experiences. We provide two main customization features : modulate the details of your experiences and tag them with skills ! This can be done by **clicking** on the bars from the timeline and by using the **drag and drop** feature. Here is an exemple of that:
 
 <div>
-<img src="static/images/customization.gif" style="width:100%">
+<img src="static/images/customization.gif" width="100%">
 </div>
 
 ## 3. Export your resume
 
-Once that you are satisfied with the result, you can clik on the PDF button and get your PDF resume.
+Once that you are satisfied with the result, you can clik on the **PDF button** and get your PDF resume.
 
 # Additional information
 
