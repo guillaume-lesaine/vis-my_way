@@ -1,3 +1,7 @@
+//à modifier: ligne 18 --> stated on
+//à modifier: si contact plus récent que la dernière expérience dans timeline
+//position actuelle: quelle date de fin?
+
 var mouse_js;
 onmousemove = function(e) {
 	//mouse_js = [e.clientX,e.clientY]
@@ -5,25 +9,18 @@ onmousemove = function(e) {
 }
 
 function plot_core(data_core) {
-  data_education = data_core[0];
+  data_education_temp = data_core[0];
   data_positions = data_core[1];
   data_projects = data_core[2];
   //data_core[3] --> contacts
 
   //###___timeline___###
-
-  //Education: min 1 year
-  data_education.forEach(function(d) {
-    if (d['Start Date'] === d['End Date']) {
-      d['End Date'] = String(Number(d['Start Date']) + 1)
-    }
+  var data_education = [];
+  data_education_temp.forEach(function(d) {
+	  if (d['Start Date'].length != 0) {
+		  data_education.push(d)		  
+	  }
   })
-  //Education --> sept
-  data_education.forEach(function(d) {
-    d['Start Date'] = "Sep " + d['Start Date'];
-    d['End Date'] = "Sep " + d['End Date'];
-  })
-
   //creation data_timeline
   var data_timeline = [];
   data_education.forEach(function(d,i) {
@@ -41,16 +38,28 @@ function plot_core(data_core) {
 
   //Data Parsing
   var parseDate_MY = d3.timeParse("%b %Y");
+  var parseDate_Y = d3.timeParse("%Y");
 
   data_timeline.forEach(function(d) {
-	if (d['Start Date'] === undefined) {
-		d.start_date = parseDate_MY(d['Started On']);
-		d.end_date = parseDate_MY(d['Finished On']);
-	} else {
-		d.start_date = parseDate_MY(d['Start Date']);
-		d.end_date = parseDate_MY(d['End Date']);
-	}
+	  if (d.type === "education") {
+		if (d['Start Date'] === undefined) {
+			d.start_date = parseDate_Y(d['Started On']);
+			d.end_date = parseDate_Y(d['Finished On']);
+		} else {
+			d.start_date = parseDate_Y(d['Start Date']);
+			d.end_date = parseDate_Y(d['End Date']);
+		}
+	  } else {
+		if (d['Start Date'] === undefined) {
+			d.start_date = parseDate_MY(d['Started On']);
+			d.end_date = parseDate_MY(d['Finished On']);
+		} else {
+			d.start_date = parseDate_MY(d['Start Date']);
+			d.end_date = parseDate_MY(d['End Date']);
+		}
+	  }
   })
+
   //education 1 year min
   //position 1 month min
   data_timeline.forEach(function(d) {
@@ -65,6 +74,13 @@ function plot_core(data_core) {
       };
     }
   })
+  //Education --> sept
+  data_timeline.forEach(function(d) {
+    if (d.type === "education") {
+		d.start_date = d3.timeMonth.offset(d.start_date, 8)
+		d.end_date = d3.timeMonth.offset(d.end_date, 8)
+      };
+    })
 
 
   //sort
@@ -314,12 +330,13 @@ function plot_connections(data_connections,data_timeline,color) {
 	.attr('transform','translate(5,2)')
 
   //Creation des echelles
-
+  //min: timeline
+  //max: first key
   var domain_y = d3.timeMonth.range(d3.min(data_timeline, function(d) {
 		return d.start_date
-    }),d3.max(data_timeline, function(d) {
-		return d.end_date
-    }))
+    }), 
+	d3.timeMonth.offset(parseDate_MY(data_connections[0].key), 1)
+    )
 
   //echelle verticale y
   var yScale = d3.scaleBand()
@@ -386,7 +403,7 @@ function plot_connections(data_connections,data_timeline,color) {
 	.enter()
     .append("circle")
     .attr("cx", function(d) { return xScale(d.value); })
-    .attr("cy", function(d) { return yScale(d.key) + yScale.bandwidth()/2 ; })
+    .attr("cy", function(d) {return  yScale(d.key) + yScale.bandwidth()/2 ; })
     .attr("r", width/70)
 }
 
