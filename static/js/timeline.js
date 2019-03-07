@@ -1,6 +1,7 @@
 var mouse_js;
 onmousemove = function(e) {
-	mouse_js = [e.clientX,e.clientY]
+	//mouse_js = [e.clientX,e.clientY]
+	mouse_js = [e.pageX,e.pageY]
 }
 
 function plot_core(data_core) {
