@@ -1,5 +1,4 @@
 //à modifier: ligne 18 --> stated on
-//à modifier: si contact plus récent que la dernière expérience dans timeline
 //position actuelle: quelle date de fin?
 //si description vide?
 
@@ -16,12 +15,14 @@ function plot_core(data_core) {
   //data_core[3] --> contacts
 
   //###___timeline___###
+	//remove education without dates
   var data_education = [];
   data_education_temp.forEach(function(d) {
 	  if (d['Start Date'].length != 0) {
-		  data_education.push(d)		  
+		  data_education.push(d)
 	  }
   })
+
   //creation data_timeline
   var data_timeline = [];
   data_education.forEach(function(d,i) {
@@ -139,9 +140,7 @@ function plot_core(data_core) {
 		if (d.type === "projects") {
 			d.color = color_timeline[2](d.order)
 		}
-	})
-
-	plot_timeline(data_timeline);
+	});
 
   //###___contacts___###
 
@@ -166,11 +165,12 @@ function plot_core(data_core) {
     })
     .entries(data_core[3]);
 
+	plot_timeline(data_timeline,data_connections);
   plot_connections(data_connections,data_timeline,color);
 
 }
 
-function plot_timeline(data_timeline) {
+function plot_timeline(data_timeline,data_connections) {
   // Creation du svg graph
 
   d3.select("#svg_timeline_graph").remove();
@@ -191,14 +191,15 @@ function plot_timeline(data_timeline) {
     .append('g')
 	.attr("transform", "translate(" + width*0.05 + ", 0)");
 
-
+var parseDate_MY = d3.timeParse("%b %Y");
   //echelle verticale y
   var yScale = d3.scaleTime()
-    .domain([d3.min(data_timeline, function(d) {
-      return d.start_date
-    }), d3.max(data_timeline, function(d) {
-      return d.end_date
-    })])
+    .domain([Math.min(
+			d3.min(data_timeline, function(d) {return d.start_date}), //min timeline
+			parseDate_MY(data_connections[data_connections.length-1].key)) //min connections
+		,Math.max(
+		d3.max(data_timeline, function(d) {return d.end_date}), //max timeline
+		parseDate_MY(data_connections[0].key))]) //max connections
     .range([height, 0]);
 
   //echelle x
@@ -277,24 +278,24 @@ function plot_timeline(data_timeline) {
 		state_array[i] = String((Number(state_array[i])+1)%4);
 		//console.log(state_array);
 
-		plot_timeline_text_refresh(data_timeline,state_array);
+		plot_timeline_text_refresh(data_timeline,data_connections,state_array);
 	})
 
 	d3.select("#timeline_text")
 	.on('drop', function() {
-		plot_timeline_text_refresh(data_timeline,state_array);
+		plot_timeline_text_refresh(data_timeline,data_connections,state_array);
 	})
 
   document.getElementById("skills")
   .addEventListener('drop', function() {
     doit = setTimeout(function() {
-      plot_timeline_text_refresh(data_timeline,state_array);
+      plot_timeline_text_refresh(data_timeline,data_connections,state_array);
     }, 10);
   })
 
 
   window.addEventListener("resize", function() {
-    plot_timeline_text_resize(data_timeline)
+    plot_timeline_text_resize(data_timeline,data_connections)
   });
 
 	plot_timeline_text_load(data_timeline,yScale,state_array);
@@ -333,7 +334,7 @@ function plot_connections(data_connections,data_timeline,color) {
   //max: first key
   var domain_y = d3.timeMonth.range(d3.min(data_timeline, function(d) {
 		return d.start_date
-    }), 
+    }),
 	d3.timeMonth.offset(parseDate_MY(data_connections[0].key), 1)
     )
 
@@ -598,7 +599,7 @@ function plot_timeline_text_load(data_timeline,yScale,state_array) {
   //drag_and_drop(true)
 }
 
-function plot_timeline_text_refresh(data_timeline,state_array) {
+function plot_timeline_text_refresh(data_timeline,data_connections,state_array) {
 	//hidden according to the state
 	state_array.forEach(function(d,i) {
 	//state = 0 nothing
@@ -634,13 +635,15 @@ function plot_timeline_text_refresh(data_timeline,state_array) {
 
   var height = document.getElementById("connections").offsetHeight // - margin.top - margin.bottom;
 
-  //echelle verticale y
+var parseDate_MY = d3.timeParse("%b %Y");
+	//echelle verticale y
 	var yScale = d3.scaleTime()
-    .domain([d3.min(data_timeline, function(d) {
-      return d.start_date
-    }), d3.max(data_timeline, function(d) {
-      return d.end_date
-    })])
+    .domain([Math.min(
+			d3.min(data_timeline, function(d) {return d.start_date}), //min timeline
+			parseDate_MY(data_connections[data_connections.length-1].key)) //min connections
+		,Math.max(
+		d3.max(data_timeline, function(d) {return d.end_date}), //max timeline
+		parseDate_MY(data_connections[0].key))]) //max connections
     .range([height, 0]);
 
 	//management of the layout 100% or 50%
@@ -684,14 +687,17 @@ function plot_timeline_text_refresh(data_timeline,state_array) {
 	}
 }
 
-function plot_timeline_text_resize(data_timeline) {
+function plot_timeline_text_resize(data_timeline,data_connections) {
   var height = document.getElementById("timeline_graph").offsetHeight
-  var yScale = d3.scaleTime()
-    .domain([d3.min(data_timeline, function(d) {
-      return d.start_date
-    }), d3.max(data_timeline, function(d) {
-      return d.end_date
-    })])
+var parseDate_MY = d3.timeParse("%b %Y");
+	//echelle verticale y
+	var yScale = d3.scaleTime()
+    .domain([Math.min(
+			d3.min(data_timeline, function(d) {return d.start_date}), //min timeline
+			parseDate_MY(data_connections[data_connections.length-1].key)) //min connections
+		,Math.max(
+		d3.max(data_timeline, function(d) {return d.end_date}), //max timeline
+		parseDate_MY(data_connections[0].key))]) //max connections
     .range([height, 0]);
   data_timeline.forEach(function(d,i) {
     x = document.getElementById("text_box_"+i)
