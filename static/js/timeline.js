@@ -1,6 +1,7 @@
 //à modifier: ligne 18 --> stated on
 //à modifier: si contact plus récent que la dernière expérience dans timeline
 //position actuelle: quelle date de fin?
+//si description vide?
 
 var mouse_js;
 onmousemove = function(e) {
@@ -170,7 +171,6 @@ function plot_core(data_core) {
 }
 
 function plot_timeline(data_timeline) {
-
   // Creation du svg graph
 
   d3.select("#svg_timeline_graph").remove();
@@ -265,10 +265,9 @@ function plot_timeline(data_timeline) {
 			 } else {
 			   return 0.2
 			 }
-		   });
+		   })
 	   })
-
-	.on('mouseout', function() {
+	   .on('mouseout', function() {
 		tooltip.classed('hidden', true);
 		d3.selectAll('.rect_timeline')
 		.attr("opacity", 1);
